@@ -1,0 +1,17 @@
+.center {
+    display: block;
+    margin: 0 auto;
+}
+
+.errorInput ::placeholder {
+    color : red;
+}
+
+.profile-page-picture {
+    width: 200px;
+
+}
+
+.sidemenu {
+    height: 100%;
+}

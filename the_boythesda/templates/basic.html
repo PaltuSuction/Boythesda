@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href='{% static 'the_boythesda/styles.css' %}'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>BOYTHESDA</title>
+</head>
+<body>
+
+    <header>
+        <nav class = 'navbar navbar-expand-lg navbar-dark bg-dark' >
+        <div class = 'container'>
+            <a class = 'navbar-brand'>BOYTHESDA</a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a href="{% url 'main' %}" class="nav-link">Главная</a></li>
+                    <li class="nav-item"><a href="{% url 'about_us' %}" class="nav-link">О нас</a></li>
+                    <li class="nav-item"><a href="{% url 'cart_detail' %}" class="nav-link">Корзина</a></li>
+                    {% if user.is_authenticated %}
+                         <li class="nav-item"><a href="{% url 'userPage' user.username %}" class="nav-link">{{ user.username }}</a></li>
+                        {% else %}
+                        <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Вход/Регистрация</a></li>
+                    {% endif %}
+                </ul>
+
+
+                   <!-- <form class = 'form-inline mt-2 mt-md-0' action = '/searchGame/' method="get"> -->
+                        <form class = 'form-inline mt-2 mt-md-0' action = '{% url 'searchGame'%}' method="get">
+                        <div class = 'row'>
+                            {% if errors %}
+                        {% for error in errors %}
+                            <input class="form-control mr-sm-2 errorInput" type="text" placeholder="{{error}}" aria-label="Search" id = 'search' name = 'q'>
+                            <button class="btn btn-light my-2 my-sm-0" type="submit">Искать</button>
+                        {% endfor %}
+                        {% else %}
+                            <input class="form-control mr-sm-2" type="text" placeholder="Введите ключевые слова" aria-label="Search" id = 'search' name = 'q'>
+                            <button class="btn btn-light my-2 my-sm-0" type="submit">Искать</button>
+                        {% endif %}
+                        </div>
+                    </form>
+
+            </div>
+        </div>
+    </nav>
+
+    </header>
+
+
+    <main>
+        <div class = 'row'>
+
+            <div class = 'col-md-10 mt-3'>
+                {% block content %}
+
+                {% endblock %}
+            </div>
+
+            <aside class = 'col-md-2'>
+                <div class="p-3">
+                    <h4 class="font">Смотрите также:</h4>
+                    <ol class="list-unstyled mb">
+                        <li><a href="#">Статьи</a></li>
+                        <li><a href="#">Форумы</a></li>
+                        <li><a href="#">Обзоры</a></li>
+                        <li><a href="#">Релизы</a></li>
+                        <li><a href="{% url 'publishers' %}">Издатели</a></li>
+                        <li><a href="#">Категории</a></li>
+                    </ol>
+                    <div class="dropdown open">
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown01">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer>
+        <p class="mt-5 mb-3 text-muted text-center">&copy; 2019-2020</p>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends 'basic.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class = 'container-fluid'>
+        <div class="row">
+            {% for game in game_list %}
+                <div class = 'col-md-4'>
+                    <div class = 'card mb-4'> <!-- Отступ между строками -->
+                        <h4 class = 'card-title text-center' >{{ game.title }}</h4>
+                        <div class = 'card-img-top'><a href = '{% url 'game' game.pk %}'><img class = 'img-fluid' src = '{{ game.Image.url }}' alt = 'Обложка'></a></div>
+                        <div class = 'card-body'>
+
+                            <p class = 'card-text'> {{ game.summary_short }}</p>
+
+                            <form action="{% url 'cart_add' game.pk %}" method="post">
+                                 {% csrf_token %}
+                                <!--<label for ='id_quantity'>Количество:</label> -->
+                                <input id = 'id_update' type = 'submit' class = 'list-group-item btn btn-outline-dark text-center' value="В корзину ({{ game.price }} руб.)">
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

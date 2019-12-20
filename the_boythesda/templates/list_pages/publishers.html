@@ -1,0 +1,26 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+{% if publisher_list %}
+    <div class = 'container'>
+    <div class = 'row'>
+            {% for publisher in publisher_list %}
+                <div class = 'col-md-6'>
+                    <div class = 'card mt-4'>
+                        <div class = 'card-title '>
+                            <h1>{{ publisher.name }}</h1>
+                        </div>
+                    <div class = 'card-body'>
+                            {% for game in publisher.game_set.all %}
+                                <p><a href = '{% url 'game' game.pk %}'>{{ game.title }}</a>, {{ game.releaseDate }}
+                            {% endfor %}
+                        <p>Дата основания: {{ publisher.foundation_date }}</p>
+                        <a href =  '{% url 'publisher' publisher.pk %}' class="btn btn-primary">Подробнее</a>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+    </div>
+    {% endif %}
+{% endblock %}

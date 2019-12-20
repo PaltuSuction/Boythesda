@@ -1,0 +1,29 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+    {% if form.errors %}
+    <p>Неверный логин или пароль. Попробуйте ещё раз</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <p>Пользователь авторизирован</p>
+    {% endif %}
+
+   <div class="container-fluid col-md-4">
+    <form class="form-signin" method = 'POST' action="{% url 'login' %}">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 font-weight-normal text-left">Вход в аккаунт</h1>
+
+        <label for="id_username" class="sr-only font-weight-normal">Логин</label>
+        <input type="text" id="id_username" class="form-control" size = 40px placeholder="Ваш логин" required autofocus name = 'username'>
+
+        <label for="id_password" class="sr-only">Пароль</label>
+        <input type="password" id="id_password" class="form-control" placeholder="Пароль" required name = 'password'>
+
+        <input class="btn btn-lg  btn-block btn-outline-dark" type="submit" value="Войти">
+        <button class = 'btn btn-lg btn-block btn-outline-dark' type="button" onclick="location.href ='{% url 'registration' %}'">Регистрация</button>
+    </form>
+
+   </div>
+{% endblock %}
+
