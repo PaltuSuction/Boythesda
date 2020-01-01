@@ -2,7 +2,9 @@
 {% block content %}
     <div class = container-fluid>
         <h2 class="text-center">{{ game.title }}</h2>
+        {% if game.Image %}
         <img src = '{{ game.Image.url }}' alt = 'Изображение' width="700" class = 'GameImage center'>
+        {% endif %}
             <div class = 'row'>
                 <div class = 'col-sm mt-3'>
                     <p>{{ game.summary }}</p>

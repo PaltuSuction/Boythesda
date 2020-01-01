@@ -15,5 +15,7 @@ urlpatterns = [
 
     url(r'^publisher/(?P<pk>\d+)/$', views.PublisherDetailView.as_view(), name = 'publisher'),
 
-    url(r'about_us/', views.AboutUs, name = 'about_us' )
+    url(r'^about_us/$', views.AboutUs, name = 'about_us'),
+
+    url(r'^genres/$', views.GenreListView, name = 'genres')
 ]

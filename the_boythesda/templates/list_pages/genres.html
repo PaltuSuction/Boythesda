@@ -1,0 +1,23 @@
+{% extends 'basic.html' %}
+{% block content %}
+    <div class = 'container'>
+        <div class = 'row'>
+            {% for genre in genres %}
+                <div class = 'col-md-4'>
+                    <div class = 'card mt-4'>
+                        <div class = 'card-title'>
+                            <h4>{{ genre }}</h4>
+                        </div>
+
+                        <div class = 'card-body'>
+                            {% for game in genre.game_set.all %}
+                                <h5>{{ game.title }}</h5>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+    {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

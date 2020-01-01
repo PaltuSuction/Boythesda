@@ -75,3 +75,8 @@ def GameDetailView(request, pk):
     cart_product_form = CartAddProductForm
     return render(request, 'individual_pages/games/game.html', {'game': game, 'cart_product_form': cart_product_form})
 
+def GenreListView(req):
+    genres = Genre.objects.all()
+    context = {'genres' : genres}
+
+    return render_to_response('list_pages/genres.html', context)
