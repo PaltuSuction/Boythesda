@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'the_boythesda.apps.TheBoythesdaConfig',
     'userstuff.apps.UserstuffConfig',
     'cart.apps.CartConfig',
+
+    'django_filters',
 ]
 
 MIDDLEWARE = [

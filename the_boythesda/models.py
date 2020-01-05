@@ -25,14 +25,13 @@ class Game(models.Model):
         return self.title
 
     def summary_short(self):
-        short_s = ''
-        for i in self.summary:
-            if i == '.':
-                short_s += i
-                break
-            else:
-                short_s += i
-        return short_s
+        summary_list = self.summary.split(' ')
+        i = len(summary_list)
+        if i > 30: i = 30
+        elif i == 0: return "Описания нет."
+        short_sum = ' '.join(summary_list[0:i])
+        return short_sum + '...'
+
 
 
 

@@ -1,29 +1,56 @@
 import math
 
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import render, render_to_response, get_object_or_404
 
 # Create your views here.
 from django.views import generic
+from django.views.generic.edit import FormMixin
 
 from the_boythesda import forms
+from the_boythesda.forms import GenreChoiceForm
 from the_boythesda.models import Game, Publisher, Genre, SysReq
 
 from userstuff.views import login
 
 from cart.forms import CartAddProductForm
 
+class FormListView(generic.list.ListView, FormMixin):
+
+    def get(self, request, *args, **kwargs):
+        # From ProcessFormMixin
+        form_class = self.get_form_class()
+        self.form = self.get_form(form_class)
+
+        # From BaseListView
+        self.object_list = self.get_queryset()
+        allow_empty = self.get_allow_empty()
+        if not allow_empty and len(self.object_list) == 0:
+            raise Http404(_(u"Empty list and '%(class_name)s.allow_empty' is False.")
+                          % {'class_name': self.__class__.__name__})
+
+        context = self.get_context_data(object_list=self.object_list, form=self.form)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
 def AboutUs(req):
     return render(req, 'aboutUs.html')
 
 
-class GameListView(generic.ListView):
+class GameListView(FormListView):
     model = Game
+    ordering = ['releaseDate', 'scoreUsers']
     template_name = 'mainpage.html'
+    paginate_by = 10
+    form_class = GenreChoiceForm
 
     def get_context_data(self, **kwargs):
-        context = super(self.__class__, self).get_context_data(**kwargs)
-        context['cart_game_form'] = CartAddProductForm()
+        context = super(GameListView, self).get_context_data(**kwargs)
+        context['all_genres'] = Genre.objects.all()
+        context['genres_form'] = self.form
         return context
 
     def Search(self):
@@ -44,6 +71,7 @@ class GameDetailView_2(generic.DetailView):
 class PublisherListView(generic.ListView):
     model = Publisher
     template_name = 'list_pages/publishers.html'
+    paginate_by = 10
 
 class PublisherDetailView(generic.DetailView):
     model = Publisher
@@ -80,3 +108,15 @@ def GenreListView(req):
     context = {'genres' : genres}
 
     return render_to_response('list_pages/genres.html', context)
+
+'''
+def GenresChoice(req):
+    if req.method == 'POST':
+        form = GenreChoiceForm(req.post)
+        if form.is_valid():
+            genres = form.save(commit=False)
+            genres.save()
+            form.save_m2m()
+    else: form = GenreChoiceForm()
+    return render(req, 'mainpage.html', {"genres_form": form})
+'''

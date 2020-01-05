@@ -2,18 +2,22 @@
 {% block content %}
     <div class = container-fluid>
         <h2 class="text-center">{{ game.title }}</h2>
-        {% if game.Image %}
-        <img src = '{{ game.Image.url }}' alt = 'Изображение' width="700" class = 'GameImage center'>
-        {% endif %}
-            <div class = 'row'>
-                <div class = 'col-sm mt-3'>
-                    <p>{{ game.summary }}</p>
-                </div>
-                <div class = 'col-sm mt-3'>
-                    <h4>Системные требования:</h4>
-                    <table>
+        <div class = 'row'>
+            <div class = 'col-md-4'>
+                {% if game.Image %}
+                    <img src = '{{ game.Image.url }}' alt = 'Изображение' class = 'img-fluid' width="500">
+                {% endif %}
+            </div>
+
+             <div class = 'col-md-8'>
+                 <div class = 'summary'>
+                     <p>{{ game.summary }}</p>
+                 </div>
+                 <div>
+                      <h5>Системные требования (минимальные):</h5>
+                    <table class = 'table'>
                         <tr>
-                            <td><p>Процессор:</p></td>                   <td>{{ game.sysReq.CPU }}</td>
+                            <td class = 'sysreqTable mb-auto' ><p>Процессор:</p></td>                   <td class = 'sysreqTable mb-auto' >{{ game.sysReq.CPU }}</td>
                         </tr>
                         <tr>
                             <td><p>Видеокарта:</p></td>                 <td>{{ game.sysReq.GPU }}</td>
@@ -22,14 +26,19 @@
                             <td><p>Оперативная память:</p></td>         <td>{{ game.sysReq.DDR }} Гб</td>
                         </tr>
                         <tr>
-                            <td><p>Объем на жестком диске:</p></td>     <td>{{ game.sysReq.HDD }} Гб</td>
+                            <td><p>Объем на жестком диске:</p></td>     <td>{{ game.sysReq.HDD }}</td>
                         </tr>
                     </table>
-                </div>
+                 </div>
             </div>
+        </div>
 
+        {% if game.price %}
+            <p class="price">{{ game.price }} руб.</p>
+            {% else %}
+            <p class="price">Цена не указана</p>
+        {% endif %}
 
-        <p class="price">{{ game.price }} руб.</p>
         <form action="{% url "cart_add" game.pk %}" method="post">
             {{ cart_product_form }}
             {% csrf_token %}

@@ -15,3 +15,18 @@
 .sidemenu {
     height: 100%;
 }
+
+.mb-auto, .my-auto {
+    margin-bottom: auto !important;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+}
+
+.media-object {
+    display: block;
+}
+

@@ -1,19 +1,29 @@
 {% extends 'basic.html' %}
 
 {% block content %}
-            <div class = 'col-md-4'>
+            <div class = 'row'>
 
                 {% for game in games %}
-                    <div class = 'card mb-4'> <!-- Отступ между строками -->
-                        <div class = 'card-body'>
-                            <div class = 'card-img-top'><a href = '{% url 'game' game.pk %}'><img class = 'img-fluid' src = '{{ game.Image.url }}' alt = 'Обложка'></a></div>
-                            <h4 class = 'card-title'>{{ game.title }}</h4>
-                            <p class = 'card-text'> {{ game.summary_short }}</p>
-                            <p class = 'list-group-item'>{{ game.price }}</p>
-                            <p class = 'list-group-item card-link'>В корзину</p>
+                    <div class = 'col-md-6'>
+                    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                        <div class="col p-4 d-flex flex-column position-static">
+                            <h5 class="mb-0">{{game.title}}</h5>
+                            <div class="mb-1 text-muted">{{ game.releaseDate }}</div>
+                            <p class="card-text mb-auto"> {{ game.summary_short }}</p>
+                            <a href="{% url 'game' game.pk %}" class="stretched-link">Подробнее</a>
+                        </div>
+
+                        <div class="col p-4 d-flex flex-column position-static">
+                               {% if game.Image %}
+                            <a href = '{% url 'game' game.pk %}'>
+                                <img class = 'img-fluid' src = '{{ game.Image.url }}' alt = 'Обложка'>
+                            </a>
+                        {% endif %}
                         </div>
                     </div>
+                    </div>
                 {% endfor %}
+
             </div>
     <div class = 'row'>
         {% if publishers %}

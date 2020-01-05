@@ -67,16 +67,16 @@
                         <li><a href="#">Обзоры</a></li>
                         <li><a href="#">Релизы</a></li>
                         <li><a href="{% url 'publishers' %}">Издатели</a></li>
-                        <li><a href="{% url 'genres' %}">Категории</a></li>
+                        <li>
+                            <a href="{% url 'genres' %}">Жанры</a>
+                            <ul>
+                                {% block sidemenu %}
+
+                                {% endblock %}
+                            </ul>
+                        </li>
                     </ol>
-                    <div class="dropdown open">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
+
                 </div>
             </aside>
         </div>
