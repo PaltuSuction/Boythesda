@@ -33,6 +33,9 @@
             </div>
         </div>
 
+        {% if game.genre %}
+            <p>{{ game.genre.all }}</p>
+        {% endif %}
         {% if game.price %}
             <p class="price">{{ game.price }} руб.</p>
             {% else %}

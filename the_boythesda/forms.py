@@ -11,4 +11,4 @@ class GenreChoiceForm(forms.ModelForm):
 
     class Meta:
         model = Genre
-        exclude = ['id']
+        exclude = ['id', 'name']

@@ -31,6 +31,7 @@ urlpatterns = [
 
     url(r'^cart/', include('cart.urls'), name='cart'),
 
+    url(r'^order/', include('orders.urls'), name='orders'),
     ######
     path('', include('the_boythesda.urls')),
 ]

@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'the_boythesda.apps.TheBoythesdaConfig',
     'userstuff.apps.UserstuffConfig',
     'cart.apps.CartConfig',
+    'orders.apps.OrdersConfig',
 
     'django_filters',
+    'robokassa',
+
 ]
 
 MIDDLEWARE = [
@@ -138,3 +141,6 @@ LOGIN_REDIRECT_URL = '/'
 
 
 CART_SESSION_ID = 'cart' # ключ для хранения корзины в сессии пользователя
+
+ROBOKASSA_LOGIN = 'paltusuction'
+ROBOKASSA_PASSWORD1 = 'gZC5dy784p'

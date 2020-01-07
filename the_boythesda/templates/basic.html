@@ -28,20 +28,19 @@
 
 
                    <!-- <form class = 'form-inline mt-2 mt-md-0' action = '/searchGame/' method="get"> -->
-                        <form class = 'form-inline mt-2 mt-md-0' action = '{% url 'searchGame'%}' method="get">
-                        <div class = 'row'>
-                            {% if errors %}
-                        {% for error in errors %}
-                            <input class="form-control mr-sm-2 errorInput" type="text" placeholder="{{error}}" aria-label="Search" id = 'search' name = 'q'>
-                            <button class="btn btn-light my-2 my-sm-0" type="submit">Искать</button>
-                        {% endfor %}
-                        {% else %}
-                            <input class="form-control mr-sm-2" type="text" placeholder="Введите ключевые слова" aria-label="Search" id = 'search' name = 'q'>
-                            <button class="btn btn-light my-2 my-sm-0" type="submit">Искать</button>
-                        {% endif %}
-                        </div>
-                    </form>
-
+                        <form class = 'form-inline mt-2 mt-md-0' action = '{% url 'searchGame' %}' method="get">
+                            <div class = 'row'>
+                                {% if errors %}
+                                    {% for error in errors %}
+                                        <input class="form-control mr-sm-2 errorInput" type="text" placeholder="{{error}}" aria-label="Search" id = 'search' name = 'q'>
+                                        <button class="btn btn-light my-2 my-sm-0" type="submit">Искать</button>
+                                    {% endfor %}
+                                {% else %}
+                                    <input class="form-control mr-sm-2" type="text" placeholder="Введите ключевые слова" aria-label="Search" id = 'search' name = 'q'>
+                                    <button class="btn btn-light my-2 my-sm-0" type="submit">Искать</button>
+                                {% endif %}
+                            </div>
+                        </form>
             </div>
         </div>
     </nav>

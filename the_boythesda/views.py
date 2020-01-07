@@ -36,9 +36,6 @@ class FormListView(generic.list.ListView, FormMixin):
     def post(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)
 
-def AboutUs(req):
-    return render(req, 'aboutUs.html')
-
 
 class GameListView(FormListView):
     model = Game
@@ -46,20 +43,25 @@ class GameListView(FormListView):
     template_name = 'mainpage.html'
     paginate_by = 10
     form_class = GenreChoiceForm
+    context_object_name = 'game_list'
+    #success_url = '/filtered-games'
 
     def get_context_data(self, **kwargs):
         context = super(GameListView, self).get_context_data(**kwargs)
         context['all_genres'] = Genre.objects.all()
         context['genres_form'] = self.form
+
+        if self.form.is_valid():
+            gay = self.form.cleaned_data
+
+            if len(gay['genres']) == 0: context['game_list'] = Game.objects.all()
+            else:
+                gg = Game.objects.filter(genre__name__contains= list(gay['genres'])[0])
+                for i in range(1, len(list(gay['genres']))):
+                    gg = gg.filter(genre__name__contains=list(gay['genres'])[i])
+                context['game_list'] = gg
+
         return context
-
-    def Search(self):
-        queryset = super(GameListView, self).get_queryset()
-        q = self.request.GET.get('q')
-        if q:
-            return queryset.filter(Q(title__contains = q))
-        return queryset
-
 
 
 class GameDetailView_2(generic.DetailView):
@@ -92,9 +94,9 @@ def searchGame(req):
             publishers = Publisher.objects.filter(name__contains=q)
             genres = Genre.objects.filter(name__contains=q)
             context = {'games' : games, 'publishers' : publishers, 'genres' : genres, 'query': q}
-            return render_to_response('individual_pages/games/games_search_result.html', context)
+            return render_to_response('list_pages/games_search_result.html', context)
 
-    return render_to_response('individual_pages/games/games_search_result.html',
+    return render_to_response('list_pages/games_search_result.html',
                               {'errors': errors})
 
 
@@ -108,6 +110,9 @@ def GenreListView(req):
     context = {'genres' : genres}
 
     return render_to_response('list_pages/genres.html', context)
+
+def AboutUs(req):
+    return render(req, 'aboutUs.html')
 
 '''
 def GenresChoice(req):

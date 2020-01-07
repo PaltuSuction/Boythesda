@@ -38,6 +38,9 @@
         </tbody>
     </table>
     <p class="text-right">
+        <form action="{% url "OrderCreate" %}">
+            <button type="submit" class = 'btn btn-secondary'>Оформить заказ</button>
+        </form>
         <a href="{% url "main" %}" class="button light">На главную</a>
     </p>
 {% endblock %}
