@@ -142,5 +142,8 @@ LOGIN_REDIRECT_URL = '/'
 
 CART_SESSION_ID = 'cart' # ключ для хранения корзины в сессии пользователя
 
-ROBOKASSA_LOGIN = 'paltusuction'
-ROBOKASSA_PASSWORD1 = 'gZC5dy784p'
+
+#ROBOKASSA_LOGIN = 'paltusuction'
+#ROBOKASSA_PASSWORD1 = 'gZC5dy784p'
+ROBOKASSA_LOGIN = 'Test1999'
+ROBOKASSA_PASSWORD1 = 'password_1'

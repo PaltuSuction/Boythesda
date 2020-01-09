@@ -1,23 +1,28 @@
 {% extends 'basic.html' %}
 
 {% block content %}
-    {% if form.error_dict %}
+    <div class = row>
+        <div class = 'center'>
+            {% if form.error_dict %}
         <p>Введены неправильные данные. Попробуйте еще раз.</p>
     {% endif %}
     <form action="{% url 'registration' %}" method = 'POST'>
 
         {% csrf_token %}
-        <table>
+        {{ form.as_table }}
+        <table class = 'mt-1'>
             <tr>
-                <th><label for = 'id_username'>Имя пользователя</label></th><th>{{ form.username }}</th>
+                <th><label for = 'id_username' class = 'mt-2 mr-4'>Имя пользователя</label></th><th>{{ form.username }}</th>
             </tr>
             <tr>
-                 <th><label for = 'id_password1'>Пароль</label></th><th>{{ form.password1 }}</th>
+                 <th><label for = 'id_password1' class = 'mt-2 mr-4'>Пароль</label></th><th>{{ form.password1 }}</th>
             </tr>
             <tr>
-                <th><label for = 'id_password2'>Пароль (еще раз)</label></th><th>{{ form.password2 }}</th>
+                <th><label for = 'id_password2' class = 'mt-2 mr-4'>Пароль (еще раз)</label></th><th>{{ form.password2 }}</th>
             </tr>
         </table>
-    <input class = 'btn' type="submit" value="Зарегистрировать" />
+        <div style="text-align: center"><input class = 'btn btn-secondary' type="submit" value="Зарегистрироваться" /></div>
     </form>
+        </div>
+    </div>
 {% endblock %}

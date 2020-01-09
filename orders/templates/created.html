@@ -7,4 +7,8 @@
 {% block content %}
   <h1>Спасибо за заказ</h1>
   <p>Идентификатор вашего заказа: {{ order.id }}</p>
+
+    {% if payment_form_url %}
+        <script language=JavaScript src='{{ payment_form_url }}'></script>
+    {% endif %}
 {% endblock %}

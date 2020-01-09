@@ -113,15 +113,3 @@ def GenreListView(req):
 
 def AboutUs(req):
     return render(req, 'aboutUs.html')
-
-'''
-def GenresChoice(req):
-    if req.method == 'POST':
-        form = GenreChoiceForm(req.post)
-        if form.is_valid():
-            genres = form.save(commit=False)
-            genres.save()
-            form.save_m2m()
-    else: form = GenreChoiceForm()
-    return render(req, 'mainpage.html', {"genres_form": form})
-'''

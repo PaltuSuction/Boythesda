@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete= models.CASCADE)
-    user_profile_picture = models.ImageField(upload_to = 'profilePictures/', default='static/default/64572.png')
+    user_profile_picture = models.ImageField(upload_to = 'profilePictures/', default='static/default/default_profile_pic.jpg')
     user_email = models.EmailField(null = True, blank=True)
     user_rating = models.SmallIntegerField(default=0)
 

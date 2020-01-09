@@ -30,3 +30,16 @@ p {
     display: block;
 }
 
+.sysreqTable {
+    font-size: 0.8rem;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+
+
+

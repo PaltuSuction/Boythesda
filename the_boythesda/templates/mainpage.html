@@ -61,9 +61,13 @@
 {% endblock %}
 
 {% block sidemenu %}
-        <form action = '.' method="post">
+        <form  method="post">
         {% csrf_token %}
-            {{ genres_form.as_p }}
+            {% for field in genres_form %}
+                <label for ="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="checkbox" name = "genres" value="{{ field.value }}" id = '{{ field.id_for_label }}'>
+            {% endfor %}
+
         <input type="submit" value="Подтвердить">
         </form>
 {% endblock %}

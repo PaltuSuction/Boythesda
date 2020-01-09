@@ -20,9 +20,10 @@
     <ul>
       {% for item in cart  %}
         <li>
-          {{ item.product.name }} | Количество: {{ item.quantity }} | Цена: {{ item.total_price }}
+          {{ item.game.title }} | Количество: {{ item.quantity }} | Цена: {{ item.total_price }}
         </li>
       {% endfor %}
     </ul>
+  {# <script language=JavaScript src='https://auth.robokassa.ru/Merchant/PaymentForm/FormMS.js?MerchantLogin=$mrh_login&OutSum=$out_summ&InvoiceID=$inv_id&Description=$inv_desc&SignatureValue=$crc'></script> #}
   </div>
 {% endblock %}

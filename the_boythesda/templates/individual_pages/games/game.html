@@ -7,6 +7,17 @@
                 {% if game.Image %}
                     <img src = '{{ game.Image.url }}' alt = 'Изображение' class = 'img-fluid' width="500">
                 {% endif %}
+
+            <div class = "row">
+                <div class = "container">
+                   {% if game.genre %}
+                        {% for genre in game.genre.all %}
+                            <div class = "btn btn-secondary mt-1" style = 'max-block-size: min-content' >{{ genre.name }}</div>
+                        {% endfor %}
+                   {% endif %}
+                </div>
+            </div>
+
             </div>
 
              <div class = 'col-md-8'>
@@ -17,25 +28,22 @@
                       <h5>Системные требования (минимальные):</h5>
                     <table class = 'table'>
                         <tr>
-                            <td class = 'sysreqTable mb-auto' ><p>Процессор:</p></td>                   <td class = 'sysreqTable mb-auto' >{{ game.sysReq.CPU }}</td>
+                            <td><p>Процессор:</p></td>                   <td class = 'sysreqTable mb-auto' >{{ game.sysReq.CPU }}</td>
                         </tr>
                         <tr>
-                            <td><p>Видеокарта:</p></td>                 <td>{{ game.sysReq.GPU }}</td>
+                            <td><p>Видеокарта:</p></td>                 <td class = 'sysreqTable mb-auto'>{{ game.sysReq.GPU }}</td>
                         </tr>
                         <tr>
-                            <td><p>Оперативная память:</p></td>         <td>{{ game.sysReq.DDR }} Гб</td>
+                            <td><p>Оперативная память:</p></td>         <td class = 'sysreqTable mb-auto'>{{ game.sysReq.DDR }} Гб</td>
                         </tr>
                         <tr>
-                            <td><p>Объем на жестком диске:</p></td>     <td>{{ game.sysReq.HDD }}</td>
+                            <td><p>Объем на жестком диске:</p></td>     <td class = 'sysreqTable mb-auto'>{{ game.sysReq.HDD }}</td>
                         </tr>
                     </table>
                  </div>
             </div>
         </div>
 
-        {% if game.genre %}
-            <p>{{ game.genre.all }}</p>
-        {% endif %}
         {% if game.price %}
             <p class="price">{{ game.price }} руб.</p>
             {% else %}
@@ -45,7 +53,7 @@
         <form action="{% url "cart_add" game.pk %}" method="post">
             {{ cart_product_form }}
             {% csrf_token %}
-            <input type="submit" value="В корзину">
+            <input type="submit" class="btn btn-primary" value="В корзину">
         </form>
     </div>
 {% endblock %}

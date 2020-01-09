@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from userstuff.models import UserProfile
@@ -13,3 +14,7 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('user_email', 'user_profile_picture')
+
+class UserRegistrationForm(UserCreationForm):
+    def validate_password(self, *args, **kwargs):
+        super().validate_password()

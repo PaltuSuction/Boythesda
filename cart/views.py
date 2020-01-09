@@ -36,17 +36,3 @@ def cart_detail(request):
     cart = Cart(request)
     return render(request, 'cart/detail.html', {'cart': cart})
 
-@login_required
-def pay_with_robokassa(request, order_id):
-    order = get_object_or_404(Order, pk=order_id)
-
-    form = RobokassaForm(initial={
-               'OutSum': order.total,
-               'InvId': order.id,
-               'Desc': order.name,
-               'Email': request.user.email,
-               # 'IncCurrLabel': '',
-               # 'Culture': 'ru'
-           })
-
-    return render(request, 'pay_with_robokassa.html', {'form': form})
