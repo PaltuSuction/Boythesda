@@ -3,26 +3,58 @@
 {% block content %}
     <div class = row>
         <div class = 'center'>
-            {% if form.error_dict %}
-        <p>Введены неправильные данные. Попробуйте еще раз.</p>
-    {% endif %}
-    <form action="{% url 'registration' %}" method = 'POST'>
 
+    <form action="{% url 'registration' %}" method = 'POST' enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_table }}
+        <p>{{ form_user.password1.help_text }}</p>
+        {% if form_user.error_messages %}
+
+               {% for message in form_user.error_messages.values %}
+                <p> {{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
         <table class = 'mt-1'>
             <tr>
-                <th><label for = 'id_username' class = 'mt-2 mr-4'>Имя пользователя</label></th><th>{{ form.username }}</th>
+                <th><label for = 'id_username' class = 'mt-2 mr-4'>Логин пользователя</label></th><th>{{ form_user.username }}</th>
             </tr>
             <tr>
-                 <th><label for = 'id_password1' class = 'mt-2 mr-4'>Пароль</label></th><th>{{ form.password1 }}</th>
+                <th><label for = 'id_first_name' class = 'mt-2 mr-4'>Ваше имя</label></th><th>{{ form_user.first_name }}</th>
             </tr>
             <tr>
-                <th><label for = 'id_password2' class = 'mt-2 mr-4'>Пароль (еще раз)</label></th><th>{{ form.password2 }}</th>
+                <th><label for = 'id_last_name' class = 'mt-2 mr-4'>Ваша Фамилия</label></th><th>{{ form_user.last_name }}</th>
             </tr>
+            <tr>
+                <th><label for = 'id_email' class = 'mt-2 mr-4'>Ваш email</label></th><th>{{ form_profile.user_email }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_user_profile_picture' class = 'mt-2 mr-4'>Изображение профиля</label></th><th>{{ form_profile.user_profile_picture }}</th>
+            </tr>
+            <tr>
+                 <th><label for = 'id_password1' class = 'mt-2 mr-4'>Пароль</label></th><th>{{ form_user.password1 }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_password2' class = 'mt-2 mr-4'>Пароль (еще раз)</label></th><th>{{ form_user.password2 }}</th>
+            </tr>
+
         </table>
-        <div style="text-align: center"><input class = 'btn btn-secondary' type="submit" value="Зарегистрироваться" /></div>
+        <input class = 'btn btn-secondary mt-2' type="submit" value="Зарегистрироваться" />
     </form>
         </div>
     </div>
+
+    {% if form_user.errors %}
+    {% for field in form_user %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form_user.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
 {% endblock %}

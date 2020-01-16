@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -102,6 +103,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
+        'NAME': 'userstuff.password_validator.CustomPasswordValidator',
+    },
+]
+'''
+ {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
@@ -110,9 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
-
-
+'''
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -141,7 +145,6 @@ LOGIN_REDIRECT_URL = '/'
 
 
 CART_SESSION_ID = 'cart' # ключ для хранения корзины в сессии пользователя
-
 
 #ROBOKASSA_LOGIN = 'paltusuction'
 #ROBOKASSA_PASSWORD1 = 'gZC5dy784p'

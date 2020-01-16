@@ -17,5 +17,5 @@ urlpatterns = [
 
     url(r'^about_us/$', views.AboutUs, name = 'about_us'),
 
-    url(r'^genres/$', views.GenreListView, name = 'genres')
+    url(r'^games_of_genre/(?P<genre_id>\d+)/$', views.GamesOfGenre, name= 'games_of_genre')
 ]

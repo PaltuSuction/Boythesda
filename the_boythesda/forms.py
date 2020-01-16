@@ -7,7 +7,10 @@ class SearchForm(forms.Form):
     query = forms.CharField()
 
 class GenreChoiceForm(forms.ModelForm):
-    genres = forms.ModelMultipleChoiceField(queryset=Genre.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
+    genres = forms.ModelMultipleChoiceField(queryset=Genre.objects.all(),
+                                            required=False,
+                                            widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check'})
+                                            )
 
     class Meta:
         model = Genre

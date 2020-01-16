@@ -12,7 +12,9 @@
                 <div class = "container">
                    {% if game.genre %}
                         {% for genre in game.genre.all %}
-                            <div class = "btn btn-secondary mt-1" style = 'max-block-size: min-content' >{{ genre.name }}</div>
+
+                                <a class = "btn btn-secondary btn-sm mt-1" style = 'max-block-size: min-content' href = '{% url 'games_of_genre' genre.id %}'>{{ genre.name }}</a>
+
                         {% endfor %}
                    {% endif %}
                 </div>

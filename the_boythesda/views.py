@@ -79,8 +79,6 @@ class PublisherDetailView(generic.DetailView):
     model = Publisher
     template_name = 'individual_pages/publishers/publisher.html'
 
-
-
 def searchGame(req):
     errors = []
     if 'q' in req.GET:
@@ -100,16 +98,16 @@ def searchGame(req):
                               {'errors': errors})
 
 
-def GameDetailView(request, pk):
+def GameDetailView(req, pk):
     game = get_object_or_404(Game, pk=pk)
     cart_product_form = CartAddProductForm
-    return render(request, 'individual_pages/games/game.html', {'game': game, 'cart_product_form': cart_product_form})
-
-def GenreListView(req):
-    genres = Genre.objects.all()
-    context = {'genres' : genres}
-
-    return render_to_response('list_pages/genres.html', context)
+    return render(req, 'individual_pages/games/game.html', {'game': game, 'cart_product_form': cart_product_form})
 
 def AboutUs(req):
     return render(req, 'aboutUs.html')
+
+def GamesOfGenre(req, genre_id):
+    genre = Genre.objects.get(id = genre_id)
+    games_with_genre = Game.objects.filter(genre__name__contains=genre)
+    
+    return render(req, 'list_pages/gamesWithGenre.html', {'games_with_genres': games_with_genre})

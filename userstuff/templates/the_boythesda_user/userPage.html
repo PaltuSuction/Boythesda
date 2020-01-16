@@ -1,9 +1,14 @@
 {% extends 'basic.html' %}
-
+{% load staticfiles %}
 {% block content %}
     <div class= 'row'>
         <div class = 'col-md-4 mt-2'>
-            <img src="{{ user_additional.user_profile_picture.url }}" class = 'profile-page-picture' alt = ''>
+            {% if user_additional.user_profile_picture %}
+            <img src="{{ user_additional.user_profile_picture.url }}" class = 'profile-page-picture' alt = 'Profile image'>
+                {% else %}
+                <img src="{% static 'default/default_profile_pic.jpg' %}" class = 'profile-page-picture' alt = 'Default profile image'>
+            {% endif %}
+
             <h2>{{ user }}</h2>
              <button class="btn btn-submit"><a href="{% url 'logout' %}">Выйти</a></button>
              <button class="btn btn-submit"><a href="{% url 'password_reset' %}">Сменить пароль</a></button>
@@ -11,6 +16,7 @@
         <div class = 'col-md-8'>
             <ul class = 'list-group'>
                 <li class = 'list-group-item'>Зарегистрирован : {{ user.date_joined }}</li>
+
                 <li class = 'list-group-item'>Имя: {{ user.first_name }}</li>
                 <li class = 'list-group-item'>Фамилия: {{ user.last_name }}</li>
                 <li class = 'list-group-item'>Email: {{ user_additional.user_email }}</li>
