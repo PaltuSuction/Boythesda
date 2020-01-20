@@ -22,17 +22,19 @@ def UserUpdateView(req, user_id):
     else: same_user = False
 
     if req.method == 'POST':
-        form_user = UserForm(req.POST, instance=user)
+        form_user = UserUpdateForm(req.POST, instance=user)
         form_profile = UserProfileForm(req.POST, instance=user.userprofile, files=req.FILES)
-        if form_user.is_valid() and form_profile.is_valid():
-            cd = form_profile.cleaned_data
-            user.userprofile.user_profile_picture = cd['user_profile_picture']
-            form_user.save()
-            form_profile.save()
-            return render(req, 'staff_pages/users/user_update.html', context={'form_user': form_user,
-                                                                            'form_profile': form_profile,
-                                                                            'same_user': same_user,
-                                                                            'id_user': user_id, })
+        if form_user.is_valid():
+            if form_profile.is_valid():
+                cd = form_profile.cleaned_data
+                user.userprofile.user_profile_picture = cd['user_profile_picture']
+                form_user.save()
+                form_profile.save()
+                #return render(req, 'staff_pages/users/staff_users_page.html', context={'form_user': form_user,
+                #                                                            'form_profile': form_profile,
+                #                                                            'same_user': same_user,
+                #                                                            'id_user': user_id, })
+                return HttpResponseRedirect('../admin_users_page/')
     else:
         form_user = UserUpdateForm(initial={
             'username': user.username,
@@ -40,13 +42,12 @@ def UserUpdateView(req, user_id):
             'last_name': user.last_name,
             'is_staff': user.is_staff,
             'is_superuser': user.is_superuser,
-            'password1': user.password,
-            'password2': user.password,
+
         })
         form_profile = UserProfileForm(initial={
             'user_email': user.userprofile.user_email,
-            'user_profile_picture': user.userprofile.user_profile_picture,
-        })
+            'user_profile_picture': user.userprofile.user_profile_picture,})
+
     return render(req, 'staff_pages/users/user_update.html', context={'form_user': form_user,
                                                                 'form_profile': form_profile,
                                                                 'same_user': same_user,
@@ -95,24 +96,28 @@ class GameCreateView(CreateView):
     model = Game
     fields = ['title', 'summary', 'genre', 'price', 'scoreCritics', 'scoreUsers', 'publisher', 'Image', 'releaseDate', 'sysReq']
     template_name = 'staff_pages/games/game_create.html'
-    success_url = 'admin_users_page/'
+    success_url = '../admin_users_page/'
 
 class GameUpdateView(UpdateView):
     model = Game
     fields = ['title', 'summary', 'genre', 'price', 'scoreCritics', 'scoreUsers', 'publisher', 'Image', 'releaseDate',
               'sysReq']
     template_name = 'staff_pages/games/game_update.html'
-    success_url = 'admin_users_page/'
+    success_url = '../admin_games_page/'
     context_object_name = 'game'
-    def get_initial(self):
+    #form_class = GameUpdateForm
 
+    def get_initial(self):
+        ass = self.object.releaseDate.strftime("%Y-%m-%d")
+        a = ass
         return {'title': self.object.title, 'summary': self.object.summary, 'price': self.object.price, 'Image': self.object.Image,
-                'scoreCritics': self.object.scoreCritics, 'scoreUsers': self.object.scoreUsers, 'releaseDate': self.object.releaseDate}
+                'scoreCritics': self.object.scoreCritics, 'scoreUsers': self.object.scoreUsers,
+                'releaseDate': self.object.releaseDate.strftime("%Y-%m-%d")}
 
 def GameDeleteView(req, game_id):
     game = Game.objects.get(id = game_id)
     game.delete()
-    return HttpResponseRedirect('admin_games_page/')
+    return HttpResponseRedirect('../admin_games_page/')
 
 
 class GenreCreateView(CreateView):

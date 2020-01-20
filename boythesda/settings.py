@@ -145,6 +145,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_REDIRECT_URL = '/'
 
+DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
 
 CART_SESSION_ID = 'cart' # ключ для хранения корзины в сессии пользователя
 

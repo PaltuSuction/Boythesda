@@ -56,14 +56,3 @@
         {% endif %}
     </div>
 {% endblock %}
-
-{% block sidemenu %}
-        <form  method="post">
-        {% csrf_token %}
-            {% for field in genres_form %}
-                {{ field }}
-            {% endfor %}
-
-        <div style="text-align: center"><input type="submit" class = 'btn btn-secondary btn-sm' value="Подтвердить"></div>
-        </form>
-{% endblock %}

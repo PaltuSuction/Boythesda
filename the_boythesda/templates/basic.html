@@ -66,18 +66,22 @@
                 <div class="p-3">
                     <h4 class="font">Смотрите также:</h4>
                     <ol class="list-unstyled mb">
-                        <li><a href="#">Статьи</a></li>
-                        <li><a href="#">Форумы</a></li>
-                        <li><a href="#">Обзоры</a></li>
-                        <li><a href="#">Релизы</a></li>
                         <li><a href="{% url 'publishers' %}">Издатели</a></li>
                         <li>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Жанры<span class="caret"></span></button>
                                 <ul class="dropdown-menu scrollable-menu" role="menu">
-                                    {% block sidemenu %} {% endblock %}
+                                    <form  method="post">
+        {% csrf_token %}
+            {% for field in genres_form %}
+                {{ field }}
+            {% endfor %}
+
+        <div style="text-align: center"><input type="submit" class = 'btn btn-secondary btn-sm' value="Подтвердить"></div>
+        </form>
                                 </ul>
                             </div>
+
                         </li>
                     </ol>
                 </div>

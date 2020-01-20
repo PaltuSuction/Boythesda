@@ -1,7 +1,7 @@
 import math
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+
 from django.http import Http404
 from django.shortcuts import render, render_to_response, get_object_or_404
 
@@ -9,10 +9,10 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 from django.views import generic
 from django.views.generic.edit import FormMixin
 
-from the_boythesda import forms
+
 from the_boythesda.forms import GenreChoiceForm
 from the_boythesda.models import Game, Publisher, Genre, SysReq
-
+from django.utils.translation import gettext as _
 from userstuff.views import login
 
 from cart.forms import CartAddProductForm
@@ -70,13 +70,13 @@ class GameListView(FormListView):
         context.update({'pages': pages})
 
         if self.form.is_valid():
-            gay = self.form.cleaned_data
+            data = self.form.cleaned_data
 
-            if len(gay['genres']) == 0: context['game_list'] = Game.objects.all()
+            if len(data['genres']) == 0: context['game_list'] = Game.objects.all()
             else:
-                gg = Game.objects.filter(genre__name__contains= list(gay['genres'])[0])
-                for i in range(1, len(list(gay['genres']))):
-                    gg = gg.filter(genre__name__contains=list(gay['genres'])[i])
+                gg = Game.objects.filter(genre__name__contains= list(data['genres'])[0])
+                for i in range(1, len(list(data['genres']))):
+                    gg = gg.filter(genre__name__contains=list(data['genres'])[i])
                 context['game_list'] = gg
 
         return context
@@ -124,21 +124,26 @@ def GameDetailView(req, pk):
 def AboutUs(req):
     return render(req, 'aboutUs.html')
 
+
 def GamesOfGenre(req, genre_id):
     genre = Genre.objects.get(id = genre_id)
     games_with_genre = Game.objects.filter(genre__name__contains=genre)
 
     paginator = Paginator(games_with_genre, 10)
     page = req.GET.get('page')
+
     try:
         games = paginator.page(page)
     except PageNotAnInteger:
         games = paginator.page(1)
     except EmptyPage:
         games = paginator.page(paginator.num_pages)
-
-    b = paginator.page_range
-    c = b
+    if paginator.num_pages <= 11 or games.number <= 6:
+        pages = [x for x in range(1, min(paginator.num_pages + 1, 12))]
+    elif games.number > paginator.num_pages - 6:
+        pages = [x for x in range(paginator.num_pages - 10, paginator.num_pages + 1)]
+    else:
+        pages = [x for x in range(games.number - 5, games.number + 6)]
     return render(req, 'list_pages/gamesWithGenre.html', {'games': games,
+                                                          'pages': pages})
 
-                                                          })

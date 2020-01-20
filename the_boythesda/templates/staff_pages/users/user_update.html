@@ -2,6 +2,26 @@
 
 {% block content %}
     <form action = '' method = 'POST' enctype="multipart/form-data">
+   {% if form_user.errors %}
+       {% for field in form_user %}
+           {% for error in field.errors %}
+               <div class="alert alert-danger">
+                   <strong>{{ error|escape }}</strong>
+               </div>
+            {% endfor %}
+       {% endfor %}
+       {% for error in form_user.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+       {% endfor %}
+    {% endif %}
+    {% if form_profile.errors %}
+        {% for error in form_profile.errors %}
+            {{ error }}
+        {% endfor %}
+    {% endif %}
+
     {% csrf_token %}
         <table>
             <tr>
@@ -25,18 +45,9 @@
             <tr>
                 <th><label for = 'id_is_superuser' class = 'mt-2 mr-4'>Суперпользователь: </label></th><th>{{ form_user.is_superuser }}</th>
             </tr>
-            {% if same_user %}
-                <tr>
-                 <th><label for = 'id_password1' class = 'mt-2 mr-4'>Новый пароль</label></th><th>{{ form_user.password1 }}</th>
-                </tr>
-                <tr>
-                <th><label for = 'id_password2' class = 'mt-2 mr-4'>Новый пароль (еще раз)</label></th><th>{{ form_user.password2 }}</th>
-                </tr>
-            {% endif %}
         </table>
         <input class = 'btn btn-secondary mt-2' type="submit" value="Подтвердить изменения" />
     </form>
-
     <form action = "{% url 'user_delete' id_user %}">
     <input class = 'btn btn-secondary mt-2' type="submit" value="Удалить профиль" />
     </form>

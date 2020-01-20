@@ -2,32 +2,51 @@
 
 {% block content %}
     {% if publisher %}
-        <div class = 'card'>
-            <div class = 'card-body'>
-                <div class = 'card-title'>
-                   <h3> {{ publisher.name }} </h3>
+
+        <div class = 'container-fluid'>
+            <div class = 'row'>
+                <div class = 'col-md-6'>
+                    <h3 style="text-align: center">{{ publisher.name }}</h3>
                 </div>
-                <div class = 'card-body'>
-                    <div class = 'row'>
-                         <div class = 'col-md-8'>{{ publisher.summary|linebreaks }}</div>
-                        <div class = 'col-md-4'>
-                            <p>Дата основания: </p>
-                        {{ publisher.foundation_date }}
-                            <p> Выпущенные игры: </p>
-
-                            {% for game in publisher.game_set.all %}
-                                <div class = 'card'>
-                                    <div class='card-body'>
-                                        <img class = 'img-fluid' src = '{{ game.Image.url }}' alt = 'Обложка игры'>
-                                         <p><a href = '{% url 'game' game.pk %}'>{{ game.title }} </a></p>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
+                <div class = 'col-md-6'>
+                    <h3 style="text-align: center">Дата основания:
+                        {% if publisher.foundation_date %}
+                            {{ publisher.foundation_date }}
+                        {% else %}
+                            Не указана
+                        {% endif %}
+                        </h3>
                 </div>
             </div>
+            <div class = 'summary'>
+                {% if publisher.summary %}
+                    {{ publisher.summary }}
+                {% else %}
+                    <p style="text-align: justify">Itaque earum rerum hic tenetur a sapiente delectus, quis nostrum exercitationem ullam corporis suscipit laboriosam,
+                        facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
+                        Excepteur sint occaecat cupidatat non proident, quis nostrum exercitationem ullam corporis suscipit laboriosam, quis nostrud exercitation
+                        ullamco laboris nisi ut aliquip ex ea commodo consequat. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet,
+                        qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga!
+                        Sed ut perspiciatis, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate
+                        non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+                        At vero eos et accusamus et iusto odio dignissimos ducimus, nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit,...
+                    </p>
+                {% endif %}
+            </div>
+            <h3 style="text-align: center">Релизы издателя</h3>
+            <div class = 'row row-cols-sm-2 row-cols-md-4 justify-content-md-around' >
+
+                {% for game in publisher.game_set.all %}
+                <div class = 'card mt-3 mr-1'>
+                    <div class = 'card-body' style="text-align: center" >
+                        <a href = '{% url 'game' game.pk %}'><img class = 'img-fluid' style="max-width: 150px" src = '{{ game.Image.url }}' alt = 'Обложка игры'></a>
+                        <p><a href = '{% url 'game' game.pk %}'>{{ game.title }} </a></p>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
         </div>
+
     {% endif %}
 {% endblock %}

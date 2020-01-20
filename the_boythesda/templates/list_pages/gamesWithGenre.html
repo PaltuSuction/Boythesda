@@ -37,7 +37,7 @@
                         <li class="page-item"><a class = "page-link" href = "?page={{ games.previous_page_number }}">Назад</a></li>
                     {% endif %}
 
-                    {% for num in games.paginator.page_range %}
+                    {% for num in pages %}
                         {% if num == games.number %}
                             <li class="page-item active"><a class="page-link">{{ num }}</a></li>
                         {% else %}

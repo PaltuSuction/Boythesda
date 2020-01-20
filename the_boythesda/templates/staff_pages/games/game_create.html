@@ -2,6 +2,20 @@
 
 {% block content %}
     <form action="{% url 'game_create' %}" method="POST">
+    {% if form.errors %}
+       {% for field in form %}
+           {% for error in field.errors %}
+               <div class="alert alert-danger">
+                   <strong>{{ error|escape }}</strong>
+               </div>
+            {% endfor %}
+       {% endfor %}
+       {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+       {% endfor %}
+    {% endif %}
     {% csrf_token %}
         <table>
             <tr>
@@ -27,7 +41,7 @@
                     <label for="id_genre">Жанр(ы):</label>
                 </th>
                 <td>
-                    {{ form.genre }} <a href = '{% url 'genre_create' %}' target="_blank"><i class="fas fa-plus-square" ></i></a>
+                    {{ form.genre }} <a href = '{% url 'genre_create' %}'><i class="fas fa-plus-square" ></i></a>
 
                 </td>
             </tr>
@@ -61,8 +75,10 @@
                     <label for="id_publisher">Publisher:</label>
                 </th>
                 <td>
-                    {{ form.publisher }} <a href = '{% url 'publisher_create' %}' target="_blank"><i class="fas fa-plus-square" ></i></a>
-                    <a href = '{% url 'publisher_update' game.publisher.pk %}' target="_blank"><i class="fas fa-pen"></i></a>
+                    {{ form.publisher }} <a href = '{% url 'publisher_create' %}'><i class="fas fa-plus-square" ></i></a>
+                    {% if game.publisher %}
+                    <a href = '{% url 'publisher_update' game.publisher.pk %}'><i class="fas fa-pen"></i></a>
+                    {% endif %}
                     <br><span class="helptext">Издатель</span>
                 </td>
             </tr>
@@ -88,12 +104,14 @@
                     <label for="id_sysReq">Системные требования (Рекомендуемые):</label>
                 </th>
                 <td>
-                    {{ form.sysReq }} <a href = '{% url 'system_req_create'%}' target="_blank" ><i class="fas fa-plus-square" ></i></a>
-                    <a href = '{% url 'system_req_update' game.sysReq.pk %}' target="_blank"><i class="fas fa-pen"></i></a>
+                    {{ form.sysReq }} <a href = '{% url 'system_req_create'%}'  ><i class="fas fa-plus-square" ></i></a>
+                    {% if game.sysReq %}
+                    <a href = '{% url 'system_req_update' game.sysReq.pk %}' ><i class="fas fa-pen"></i></a>
+                    {% endif %}
                 </td>
             </tr>
         </table>
         <input type="submit" class = 'btn btn-secondary btn-sm' value="Сохранить игру">
     </form>
-        <a href = '{% url 'admin_games' %}'><button onclick="close_window();return false;" class="btn btn-secondary mt-2 btn-sm">Назад</button></a>
+        <a href = '{% url 'admin_games' %}'><button class="btn btn-secondary mt-2 btn-sm">Назад</button></a>
 {% endblock %}

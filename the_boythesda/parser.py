@@ -159,7 +159,7 @@ def load_data(cur, game_info):
 
     cur.execute('INSERT INTO "PUBLISHER" (name, summary)'
                 'VALUES (%s, %s);',
-                (game_info['publisher'], 'Нет описания')
+                (game_info['publisher'], None)
                 )
     cur.execute('INSERT INTO "SYSREQ" (configuration_name, "HDD", "CPU", "GPU", "DDR")'
                 'VALUES (%s, %s, %s, %s, %s);',

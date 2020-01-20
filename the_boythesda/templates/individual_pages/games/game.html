@@ -20,13 +20,48 @@
                 </div>
             </div>
 
+            <div class = 'row mt-2' style="text-align: center">
+                <div class = 'col-md-6'>
+                    <h1>{{ game.scoreCritics }}</h1>
+                    <h5>Оценка критиков</h5>
+                </div>
+                <div class = 'col-md-6'>
+                    <h1>{{ game.scoreUsers }}</h1>
+                    <h5>Оценка игроков</h5>
+                </div>
+            </div>
+            <div class = 'order_functions mt-2'>
+                {% if game.price %}
+                <h5 class="price">{{ game.price }} руб.</h5>
+                {% else %}
+                <p class="price">Цена не указана</p>
+                {% endif %}
+
+                <form action="{% url "cart_add" game.pk %}" method="post">
+                    {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary" value="В корзину">
+                </form>
+            {% if user.is_staff %}
+                <a type="btn btn-secondary" href = '{% url 'game_update' game.pk %}'>Редактирование</a>
+            {% endif %}
+            </div>
+
             </div>
 
              <div class = 'col-md-8'>
-                 <div class = 'summary'>
-                     <p>{{ game.summary }}</p>
+                 <div class = 'summary mt-2'>
+                     <p style="text-align: justify">{{ game.summary }}</p>
                  </div>
-                 <div>
+                 <div class = 'publisher mt-2'>
+                     <h5>Издатель:</h5>
+                     <a href = '{% url 'publisher' game.publisher.pk %}'>{{ game.publisher.name }}</a>
+                 </div>
+                 <div class = 'release-date mt-2'>
+                     <h5>Дата выхода:</h5>
+                    {{ game.releaseDate }}
+                 </div>
+                 <div class="sysreqTable mt-2">
                       <h5>Системные требования (минимальные):</h5>
                     <table class = 'table'>
                         <tr>
@@ -46,16 +81,5 @@
             </div>
         </div>
 
-        {% if game.price %}
-            <p class="price">{{ game.price }} руб.</p>
-            {% else %}
-            <p class="price">Цена не указана</p>
-        {% endif %}
-
-        <form action="{% url "cart_add" game.pk %}" method="post">
-            {{ cart_product_form }}
-            {% csrf_token %}
-            <input type="submit" class="btn btn-primary" value="В корзину">
-        </form>
     </div>
 {% endblock %}
