@@ -40,7 +40,7 @@ def pg_parser(url, headers):
         # p - номер последней страницы
         p = (pagination[0].find_all('a'))[-2].text
         # for i in range(1, int(p) + 1): ######################################################################################ЗАГЛУШКА
-        for i in range(1, 10):
+        for i in range(1, 4):
             url = f'https://www.playground.ru/games/?release=all&sort=follow_month&platform=pc&p={i}'
             if url not in urls:
                 urls.append(url)
