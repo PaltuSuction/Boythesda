@@ -129,9 +129,16 @@ def GamesOfGenre(req, genre_id):
     games_with_genre = Game.objects.filter(genre__name__contains=genre)
 
     paginator = Paginator(games_with_genre, 10)
-    page_number = req.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page = req.GET.get('page')
+    try:
+        games = paginator.page(page)
+    except PageNotAnInteger:
+        games = paginator.page(1)
+    except EmptyPage:
+        games = paginator.page(paginator.num_pages)
 
-    return render(req, 'list_pages/gamesWithGenre.html', {'games_with_genres': games_with_genre,
-                                                          'page_obj': page_obj,
+    b = paginator.page_range
+    c = b
+    return render(req, 'list_pages/gamesWithGenre.html', {'games': games,
+
                                                           })
