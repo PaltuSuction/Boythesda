@@ -1,0 +1,86 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+    <div class = 'container-fluid'>
+        <div class = 'row'>
+            <div class = ''>
+                <h3>Вы вошли как {{ user.username }}.</h3>
+                {% if user.is_superuser %}
+                    <h6>Вы обладаете правами <b>Суперпользователя</b>.</h6>
+                    <h6>Вам доступны функции добавления, редактирования и удаления товаров, а также редактирование списка других пользователей</h6>
+                {% elif user.is_staff%}
+                    <h6>Вы обладаете правами <b>Администратора</b>.</h6>
+                    <h6>Вам доступны функции добавления, редактирования и удаления товаров, а также просмотр списка других пользователей.</h6>
+                {% endif %}
+            <a href="{% url 'admin_users' %}" class="btn btn-secondary" role="button" aria-disabled="true">Пользователи</a>
+            <a href="#" class="btn btn-secondary disabled" role="button" aria-disabled="true">Товары</a>
+            <a href="{% url 'game_create' %}" class="btn btn-secondary" style="float: right" role="button" aria-disabled="true">Добавить игру</a>
+            <table class = 'table mt-4'>
+            <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Обложка</th>
+                <th>Дата выхода</th>
+                <th>Издатель</th>
+                <th>Жанры</th>
+            {% if user.is_superuser or user.is_staff %}
+                <th>Редактирование</th>
+            {% endif %}
+            </tr>
+            {% for game in games %}
+            <tr>
+                <td>{{ game.id }}</td>
+                <td>{{ game.title }}</td>
+                {% if game.Image %}
+                <td><img class = 'img-fluid' style="max-width: 100px" src = '{{ game.Image.url }}' alt = 'Обложка'></td>
+                {% else %}
+                    <td><p>Изображение отсутствует</p></td>
+                {% endif %}
+                <td>
+                    {% if game.releaseDate %}
+                        {{ game.releaseDate }}
+                    {% else %}
+                        <p>Дата не указана</p>
+                    {% endif %}
+                </td>
+                <td>{{ game.publisher.name }}</td>
+                <td>{% for genre in game.genre.all %}
+                    {{ genre.name }};
+                    {% endfor %}
+                    </td>
+            {% if user.is_superuser %}
+                <td><a type="btn btn-secondary" href = '{% url 'game_update' game.pk %}' target="_blank">Редактирование</a></td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+            </div>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+
+            <nav aria-label="Список страниц" class="text-center">
+                <ul class="pagination justify-content-center">
+
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class = "page-link" href = "?page={{ page_obj.previous_page_number }}">Назад</a></li>
+                    {% endif %}
+
+                    {% for num in pages %}
+                        {% if num == page_obj.number %}
+                            <li class="page-item active"><a class="page-link">{{ num }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{num}}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class = "page-link" href = "?page={{ page_obj.next_page_number }}">Вперед</a></li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        {% endif %}
+
+{% endblock %}

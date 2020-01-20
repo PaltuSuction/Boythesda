@@ -6,7 +6,7 @@
 
     <form action="{% url 'registration' %}" method = 'POST' enctype="multipart/form-data">
         {% csrf_token %}
-        <p>{{ form_user.password1.help_text }}</p>
+
         {% if form_user.error_messages %}
 
                {% for message in form_user.error_messages.values %}

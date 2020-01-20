@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href='{% static 'the_boythesda/styles.css' %}'>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <head>
     <meta charset="UTF-8">
     <title>BOYTHESDA</title>
+    <link rel="stylesheet" type="text/css" href='{% static 'the_boythesda/styles.css' %}'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/ad49d621ae.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -20,8 +21,12 @@
                     <li class="nav-item"><a href="{% url 'about_us' %}" class="nav-link">О нас</a></li>
                     <li class="nav-item"><a href="{% url 'cart_detail' %}" class="nav-link">Корзина</a></li>
                     {% if user.is_authenticated %}
-                         <li class="nav-item"><a href="{% url 'userPage' user.username %}" class="nav-link">{{ user.username }}</a></li>
+                        {% if user.is_staff %}
+                            <li class="nav-item"><a href="{% url 'userPage' user.username %}" class="nav-link">{{ user.username }} (адм.)</a></li>
                         {% else %}
+                            <li class="nav-item"><a href="{% url 'userPage' user.username %}" class="nav-link">{{ user.username }}</a></li>
+                        {% endif %}
+                    {% else %}
                         <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Вход/Регистрация</a></li>
                     {% endif %}
                 </ul>
@@ -86,4 +91,14 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script></body>
+
+    <script type="text/javascript">
+       function close_window()
+       {
+        if (confirm("Вы уверены, что хотите уйти со страницы?"))
+        {
+        close();
+        }
+        }
+    </script>
 </html>

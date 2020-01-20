@@ -1,0 +1,100 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+    <form action="{% url 'game_update' game.id %}" method="POST">
+    {% csrf_token %}
+        <table>
+            <tr>
+                <th>
+                    <label for="id_title">Название игры:</label>
+                </th>
+                <td>
+                    <input type="text" name="title" maxlength="200" required id="id_title" value="{{ game.title }}">
+                    <br><span class="helptext">Название игры</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_summary">Описание игры:</label>
+                </th>
+                <td>
+                    <textarea name="summary" cols="40" rows="10" required id="id_summary" >{{ game.summary }}</textarea>
+                    <br><span class="helptext">Описание игры</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_genre">Жанр(ы):</label>
+                </th>
+                <td>
+                    {{ form.genre }} <a href = '{% url 'genre_create' %}' target="_blank"><i class="fas fa-plus-square" ></i></a>
+
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_price">Цена:</label></th>
+                <td>
+                    <input type="number" name="price" value="{{ game.price }}" step="any" id="id_price" >
+                    <br><span class="helptext">Цена игры</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_scoreCritics">ScoreCritics:</label></th>
+                <td>
+                    <input type="number" name="scoreCritics" id="id_scoreCritics" value="{{ game.scoreCritics }}">
+                    <br><span class="helptext">Средняя оценка критиков</span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_scoreUsers">ScoreUsers:</label>
+                </th>
+                <td>
+                    <input type="number" name="scoreUsers" id="id_scoreUsers" value = '{{ game.scoreUsers }}'>
+                    <br><span class="helptext">Средняя оценка пользователей</span>
+            </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_publisher">Publisher:</label>
+                </th>
+                <td>
+                    {{ form.publisher }} <a href = '{% url 'publisher_create' %}' target="_blank"><i class="fas fa-plus-square" ></i></a>
+                    <a href = '{% url 'publisher_update' game.publisher.pk %}' target="_blank"><i class="fas fa-pen"></i></a>
+                    <br><span class="helptext">Издатель</span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="id_Image">Image:</label>
+                </th>
+                <td>
+                    <input type="file" name="Image" accept="image/*" id="id_Image" value="{{ game.Image }}">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_releaseDate">ReleaseDate:</label>
+                </th>
+                <td>
+                    <input type="text" name="releaseDate" id="id_releaseDate" value = '{{ game.releaseDate }}'>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="id_sysReq">Системные требования (Рекомендуемые):</label>
+                </th>
+                <td>
+                    {{ form.sysReq }} <a href = '{% url 'system_req_create'%}' target="_blank" ><i class="fas fa-plus-square" ></i></a>
+                    <a href = '{% url 'system_req_update' game.sysReq.pk %}' target="_blank"><i class="fas fa-pen"></i></a>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" class = 'btn btn-secondary btn-sm' value="Сохранить">
+    </form>
+    <a href = '{% url 'game_delete' game.id %}'><button class="btn btn-secondary mt-2 btn-sm">Удалить игру</button></a>
+    <a href = '{% url 'admin_games' %}'><button onclick="close_window();return false;" class="btn btn-secondary mt-2 btn-sm">Назад</button></a>
+{% endblock %}

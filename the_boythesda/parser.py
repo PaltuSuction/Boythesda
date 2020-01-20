@@ -1,3 +1,4 @@
+import random
 import re
 
 import pandas as pandas
@@ -39,7 +40,7 @@ def pg_parser(url, headers):
         # p - номер последней страницы
         p = (pagination[0].find_all('a'))[-2].text
         # for i in range(1, int(p) + 1): ######################################################################################ЗАГЛУШКА
-        for i in range(1, 2):
+        for i in range(1, 10):
             url = f'https://www.playground.ru/games/?release=all&sort=follow_month&platform=pc&p={i}'
             if url not in urls:
                 urls.append(url)
@@ -153,7 +154,7 @@ def image_parse(url):
 
 
 def load_data(cur, game_info):
-
+    random_price = random.randint(9, 30) * 100
     if game_info['title'] == None: return
 
     cur.execute('INSERT INTO "PUBLISHER" (name, summary)'
@@ -166,13 +167,13 @@ def load_data(cur, game_info):
                 )
 
 
-    cur.execute('INSERT INTO "GAME"(title, summary, "Image", "releaseDate", "scoreCritics", "scoreUsers",'
+    cur.execute('INSERT INTO "GAME"(title, price, summary, "Image", "releaseDate", "scoreCritics", "scoreUsers",'
                 'publisher_id, "sysReq_id")'
-                'VALUES (%s, %s, %s, %s, %s, %s,'
+                'VALUES (%s, %s, %s, %s, %s, %s, %s,'
                 '(SELECT "PUBLISHER".id from "PUBLISHER" where "PUBLISHER".name = %s),'
                 '(SELECT "SYSREQ".id from "SYSREQ" where "SYSREQ".configuration_name = %s));',
 
-                (game_info['title'], game_info['summary'], game_info['image'],
+                (game_info['title'], random_price, game_info['summary'], game_info['image'],
                  game_info['releaseDate'], game_info['scoreCritics'], game_info['scoreUsers'],
                 game_info['publisher'], game_info['title'])
                 )

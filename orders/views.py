@@ -27,7 +27,12 @@ def OrderCreate(request):
             #return redirect(pay_with_robokassa, order_id = order.id)
             return (pay_with_robokassa(request, order.id))
 
-    form = OrderCreateForm()
+    if request.user.is_authenticated:
+        form = OrderCreateForm(initial={'first_name' : request.user.first_name,
+                                        'last_name' : request.user.last_name,
+                                        'email':request.user.userprofile.user_email})
+    else:
+        form = OrderCreateForm()
     return render(request, 'create.html', {'cart': cart, 'form': form})
 
 

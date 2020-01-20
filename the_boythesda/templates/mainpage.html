@@ -39,7 +39,7 @@
                         <li class="page-item"><a class = "page-link" href = "?page={{ page_obj.previous_page_number }}">Назад</a></li>
                     {% endif %}
 
-                    {% for num in paginator.page_range %}
+                    {% for num in pages %}
                         {% if num == page_obj.number %}
                             <li class="page-item active"><a class="page-link">{{ num }}</a></li>
                         {% else %}
@@ -53,9 +53,6 @@
 
                 </ul>
             </nav>
-
-        {% else %}
-            <h4>Список ещё не доступен.</h4>
         {% endif %}
     </div>
 {% endblock %}

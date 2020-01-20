@@ -36,7 +36,7 @@ class Game(models.Model):
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length=200, help_text='Издатель', verbose_name='Издатель')
+    name = models.CharField(max_length=200, help_text='Издатель', verbose_name='Издатель', unique=True)
     summary = models.TextField(help_text='Описание издателя', null= True, blank=True, default='Нет описания')
     foundation_date = models.DateField(verbose_name='Год основания', blank=True, null = True)
 
@@ -49,7 +49,7 @@ class Publisher(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Жанр', default='Жанр не указан')
+    name = models.CharField(max_length=100, verbose_name='Жанр', default='Жанр не указан', unique=True)
 
     class Meta:
         db_table = 'GENRE'

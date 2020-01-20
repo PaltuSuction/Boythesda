@@ -1,0 +1,44 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+    <form action = '' method = 'POST' enctype="multipart/form-data">
+    {% csrf_token %}
+        <table>
+            <tr>
+                <th><label for = 'id_username' class = 'mt-2 mr-4'>Логин пользователя</label></th><th>{{ form_user.username }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_first_name' class = 'mt-2 mr-4'>Имя пользователя: </label></th><th>{{ form_user.first_name }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_last_name' class = 'mt-2 mr-4'>Фамилия Пользователя: </label></th><th>{{ form_user.last_name }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_email' class = 'mt-2 mr-4'>Email пользователя: </label></th><th>{{ form_profile.user_email }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_user_profile_picture' class = 'mt-2 mr-4'>Изображение профиля: </label></th><th>{{ form_profile.user_profile_picture }}</th>
+            </tr>
+            <tr>
+                 <th><label for = 'id_is_staff' class = 'mt-2 mr-4'>Администратор: </label></th><th>{{ form_user.is_staff }}</th>
+            </tr>
+            <tr>
+                <th><label for = 'id_is_superuser' class = 'mt-2 mr-4'>Суперпользователь: </label></th><th>{{ form_user.is_superuser }}</th>
+            </tr>
+            {% if same_user %}
+                <tr>
+                 <th><label for = 'id_password1' class = 'mt-2 mr-4'>Новый пароль</label></th><th>{{ form_user.password1 }}</th>
+                </tr>
+                <tr>
+                <th><label for = 'id_password2' class = 'mt-2 mr-4'>Новый пароль (еще раз)</label></th><th>{{ form_user.password2 }}</th>
+                </tr>
+            {% endif %}
+        </table>
+        <input class = 'btn btn-secondary mt-2' type="submit" value="Подтвердить изменения" />
+    </form>
+
+    <form action = "{% url 'user_delete' id_user %}">
+    <input class = 'btn btn-secondary mt-2' type="submit" value="Удалить профиль" />
+    </form>
+
+{% endblock %}

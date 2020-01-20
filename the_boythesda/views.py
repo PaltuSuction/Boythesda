@@ -1,5 +1,6 @@
 import math
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, render_to_response, get_object_or_404
@@ -50,6 +51,23 @@ class GameListView(FormListView):
         context = super(GameListView, self).get_context_data(**kwargs)
         context['all_genres'] = Genre.objects.all()
         context['genres_form'] = self.form
+
+        if not context.get('is_paginated', False):
+            return context
+
+        paginator = context.get('paginator')
+        num_pages = paginator.num_pages
+        current_page = context.get('page_obj')
+        page_no = current_page.number
+
+        if num_pages <= 11 or page_no <= 6:
+            pages = [x for x in range(1, min(num_pages + 1, 12))]
+        elif page_no > num_pages - 6:
+            pages = [x for x in range(num_pages - 10, num_pages + 1)]
+        else:
+            pages = [x for x in range(page_no - 5, page_no + 6)]
+
+        context.update({'pages': pages})
 
         if self.form.is_valid():
             gay = self.form.cleaned_data
@@ -109,5 +127,11 @@ def AboutUs(req):
 def GamesOfGenre(req, genre_id):
     genre = Genre.objects.get(id = genre_id)
     games_with_genre = Game.objects.filter(genre__name__contains=genre)
-    
-    return render(req, 'list_pages/gamesWithGenre.html', {'games_with_genres': games_with_genre})
+
+    paginator = Paginator(games_with_genre, 10)
+    page_number = req.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(req, 'list_pages/gamesWithGenre.html', {'games_with_genres': games_with_genre,
+                                                          'page_obj': page_obj,
+                                                          })

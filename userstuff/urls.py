@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.urls import path
 
 from userstuff import views
+from the_boythesda import staff_views
 
 urlpatterns = [
     url('login/', views.login.as_view(), name = 'login'),
@@ -15,5 +16,5 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', views.passwordResetConfirm.as_view(), name='password_reset_confirm'),
     path('reset/done/', views.passwordResetComplete.as_view(), name='password_reset_complete'),
 
-    url(r'^registration/$', views.register, name = 'registration')
+    url(r'^registration/$', views.register, name = 'registration'),
 ]

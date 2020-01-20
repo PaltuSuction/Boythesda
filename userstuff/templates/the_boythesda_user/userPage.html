@@ -12,6 +12,9 @@
             <h2>{{ user }}</h2>
              <button class="btn btn-submit"><a href="{% url 'logout' %}">Выйти</a></button>
              <button class="btn btn-submit"><a href="{% url 'password_reset' %}">Сменить пароль</a></button>
+            {% if user.is_staff %}
+                <button class="btn btn-submit mt-1"><a href="{% url 'admin_users' %}">Управление</a></button>
+            {% endif %}
         </div>
         <div class = 'col-md-8'>
             <ul class = 'list-group'>

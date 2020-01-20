@@ -1,0 +1,48 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+    <div class = 'container-fluid'>
+        <div class = 'row'>
+            <div class = ''>
+                <h3>Вы вошли как {{ user.username }}.</h3>
+                {% if user.is_superuser %}
+                    <h6>Вы обладаете правами <b>Суперпользователя</b>.</h6>
+                    <h6>Вам доступны функции добавления, редактирования и удаления товаров, а также редактирование списка других пользователей</h6>
+                {% elif user.is_staff%}
+                    <h6>Вы обладаете правами <b>Администратора</b>.</h6>
+                    <h6>Вам доступны функции добавления, редактирования и удаления товаров, а также просмотр списка других пользователей.</h6>
+                {% endif %}
+            <a href="#" class="btn btn-secondary disabled" role="button" aria-disabled="true">Пользователи</a>
+            <a href="{% url 'admin_games' %}" class="btn btn-secondary" role="button" aria-disabled="true">Товары</a>
+        <table class = 'table mt-4'>
+            <tr>
+                <th>id</th>
+                <th>Логин</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Email</th>
+                <th>Администратор</th>
+                <th>Суперпользователь</th>
+            {% if user.is_superuser %}
+                <th>Редактирование</th>
+            {% endif %}
+            </tr>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.first_name }}</td>
+                <td>{{ u.last_name }}</td>
+                <td>{{ u.userprofile.user_email }}</td>
+                <td>{{ u.is_staff }}</td>
+                <td>{{ u.is_superuser }}</td>
+            {% if user.is_superuser %}
+                <td><a type="btn btn-secondary" href = '{% url 'user_update' u.id %}'>Редактирование</a></td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

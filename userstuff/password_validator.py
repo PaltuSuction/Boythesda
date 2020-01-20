@@ -5,7 +5,7 @@ class CustomPasswordValidator():
     def validate(self, password, user = None):
         if not any(char.isdigit() for char in password):
             raise ValidationError('Пароль должен содержать хотя бы одну цифру!')
-        if not any(char.isupper for char in password):
+        if password.islower():
             raise ValidationError('Пароль должен содержать хотя бы одну заглавную букву!')
         if len(password) < 5:
             gay = len(password)
