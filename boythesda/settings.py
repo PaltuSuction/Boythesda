@@ -43,14 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'bootstrap_pagination',
-
     'the_boythesda.apps.TheBoythesdaConfig',
     'userstuff.apps.UserstuffConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
 
-    'django_filters',
     'robokassa',
 
 ]

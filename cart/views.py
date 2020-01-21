@@ -7,9 +7,6 @@ from the_boythesda.models import Game
 from .cart import Cart
 from .forms import CartAddProductForm
 
-from django.contrib.auth.decorators import login_required
-from robokassa.forms import RobokassaForm
-
 
 @require_POST # Декоратор для разрешения только POST запросов
 def cart_add(request, game_pk):
