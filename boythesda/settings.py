@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import django_heroku
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'qqt!!yoo11#@hp#+o4q(=n3dcm7pr$c_9wpmglbk25ox^*w)+2'
+#SECRET_KEY = 'qqt!!yoo11#@hp#+o4q(=n3dcm7pr$c_9wpmglbk25ox^*w)+2'
 
 #SECRET_KEY = os.environ.get('SECRET_KEY')
 
@@ -160,3 +161,6 @@ CART_SESSION_ID = 'cart' # ключ для хранения корзины в с
 #ROBOKASSA_PASSWORD1 = 'gZC5dy784p'
 ROBOKASSA_LOGIN = 'Test1999'
 ROBOKASSA_PASSWORD1 = 'password_1'
+
+
+django_heroku.settings(locals())
