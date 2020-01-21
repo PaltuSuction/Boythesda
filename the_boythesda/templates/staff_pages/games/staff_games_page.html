@@ -48,7 +48,7 @@
                     {{ genre.name }};
                     {% endfor %}
                     </td>
-            {% if user.is_superuser %}
+            {% if user.is_staff %}
                 <td><a type="btn btn-secondary" href = '{% url 'game_update' game.pk %}'>Редактирование</a></td>
             {% endif %}
             </tr>

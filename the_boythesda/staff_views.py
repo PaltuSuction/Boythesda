@@ -124,32 +124,32 @@ class GenreCreateView(CreateView):
     model = Genre
     fields = ['name']
     template_name = 'staff_pages/games/genre_create.html'
-    success_url = 'gamepage_create/'
+    success_url = '../gamepage_create/'
 
 class PublisherCreateView(CreateView):
     model = Publisher
     fields = ['name', 'summary', 'foundation_date']
     template_name = 'staff_pages/games/publisher_create.html'
-    success_url = 'gamepage_create/'
+    success_url = '../gamepage_create/'
 
 class PublisherUpdateView(UpdateView):
     model = Publisher
     fields = ['name', 'summary', 'foundation_date']
     template_name = 'staff_pages/games/publisher_update.html'
-    success_url = 'gamepage_create/'
+    success_url = '../gamepage_create/'
 
 
 class SysReqCreateView(CreateView):
     model = SysReq
     fields = ['configuration_name', 'HDD', 'DDR', 'CPU', 'GPU']
     template_name = 'staff_pages/games/system_req_create.html'
-    success_url = 'gamepage_create/'
+    success_url = '../gamepage_create/'
 
 class SysReqUpdateView(UpdateView):
     model = SysReq
     fields = ['configuration_name', 'HDD', 'DDR', 'CPU', 'GPU']
     template_name = 'staff_pages/games/system_req_update.html'
-    success_url = 'gamepage_create/'
+    success_url = '../gamepage_create/'
 
 
 
