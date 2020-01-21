@@ -1,0 +1,2388 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.10 (Ubuntu 10.10-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 10.10 (Ubuntu 10.10-0ubuntu0.18.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: unique_values_genre(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.unique_values_genre() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+	if exists(select name from "GENRE" where name = new.name)
+		then return NULL;
+	end if;
+	return new;
+		
+end;
+
+$$;
+
+
+--
+-- Name: unique_values_publisher(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.unique_values_publisher() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+begin
+    if exists(select name from "PUBLISHER"
+                where name = new.name)
+        then return NULL;
+        end if;
+        return new;
+end;
+$$;
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: GAME; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."GAME" (
+    id integer NOT NULL,
+    title character varying(200) NOT NULL,
+    summary text NOT NULL,
+    "releaseDate" date,
+    price double precision,
+    "Image" character varying(100),
+    "scoreCritics" integer,
+    "scoreUsers" integer,
+    publisher_id integer NOT NULL,
+    "sysReq_id" integer NOT NULL
+);
+
+
+--
+-- Name: GAME_genre; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."GAME_genre" (
+    id integer NOT NULL,
+    game_id integer NOT NULL,
+    genre_id integer NOT NULL
+);
+
+
+--
+-- Name: GENRE; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."GENRE" (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL
+);
+
+
+--
+-- Name: PUBLISHER; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."PUBLISHER" (
+    id integer NOT NULL,
+    name character varying(200) NOT NULL,
+    summary text,
+    foundation_date date
+);
+
+
+--
+-- Name: SYSREQ; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."SYSREQ" (
+    id integer NOT NULL,
+    "HDD" character varying(300) NOT NULL,
+    "CPU" character varying(300) NOT NULL,
+    "GPU" character varying(300) NOT NULL,
+    "DDR" smallint NOT NULL,
+    configuration_name character varying(200)
+);
+
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+--
+-- Name: orders_order; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.orders_order (
+    id integer NOT NULL,
+    first_name character varying(50) NOT NULL,
+    last_name character varying(50) NOT NULL,
+    email character varying(254) NOT NULL,
+    created timestamp with time zone NOT NULL,
+    updated timestamp with time zone NOT NULL,
+    paid boolean NOT NULL
+);
+
+
+--
+-- Name: orders_order_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.orders_order_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: orders_order_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.orders_order_id_seq OWNED BY public.orders_order.id;
+
+
+--
+-- Name: orders_orderitem; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.orders_orderitem (
+    id integer NOT NULL,
+    price numeric(10,2) NOT NULL,
+    quantity integer NOT NULL,
+    game_id integer NOT NULL,
+    order_id integer NOT NULL,
+    CONSTRAINT orders_orderitem_quantity_check CHECK ((quantity >= 0))
+);
+
+
+--
+-- Name: orders_orderitem_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.orders_orderitem_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: orders_orderitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.orders_orderitem_id_seq OWNED BY public.orders_orderitem.id;
+
+
+--
+-- Name: robokassa_successnotification; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.robokassa_successnotification (
+    id integer NOT NULL,
+    "InvId" integer NOT NULL,
+    "OutSum" character varying(15) NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+
+--
+-- Name: robokassa_successnotification_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.robokassa_successnotification_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: robokassa_successnotification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.robokassa_successnotification_id_seq OWNED BY public.robokassa_successnotification.id;
+
+
+--
+-- Name: the_boythesda_game_genre_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.the_boythesda_game_genre_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: the_boythesda_game_genre_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.the_boythesda_game_genre_id_seq OWNED BY public."GAME_genre".id;
+
+
+--
+-- Name: the_boythesda_game_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.the_boythesda_game_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: the_boythesda_game_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.the_boythesda_game_id_seq OWNED BY public."GAME".id;
+
+
+--
+-- Name: the_boythesda_genre_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.the_boythesda_genre_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: the_boythesda_genre_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.the_boythesda_genre_id_seq OWNED BY public."GENRE".id;
+
+
+--
+-- Name: the_boythesda_publisher_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.the_boythesda_publisher_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: the_boythesda_publisher_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.the_boythesda_publisher_id_seq OWNED BY public."PUBLISHER".id;
+
+
+--
+-- Name: the_boythesda_sysreq_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.the_boythesda_sysreq_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: the_boythesda_sysreq_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.the_boythesda_sysreq_id_seq OWNED BY public."SYSREQ".id;
+
+
+--
+-- Name: userstuff_userprofile; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.userstuff_userprofile (
+    id integer NOT NULL,
+    user_profile_picture character varying(100),
+    user_email character varying(254),
+    user_rating smallint,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: userstuff_userprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.userstuff_userprofile_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: userstuff_userprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.userstuff_userprofile_id_seq OWNED BY public.userstuff_userprofile.id;
+
+
+--
+-- Name: GAME id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME" ALTER COLUMN id SET DEFAULT nextval('public.the_boythesda_game_id_seq'::regclass);
+
+
+--
+-- Name: GAME_genre id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME_genre" ALTER COLUMN id SET DEFAULT nextval('public.the_boythesda_game_genre_id_seq'::regclass);
+
+
+--
+-- Name: GENRE id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GENRE" ALTER COLUMN id SET DEFAULT nextval('public.the_boythesda_genre_id_seq'::regclass);
+
+
+--
+-- Name: PUBLISHER id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."PUBLISHER" ALTER COLUMN id SET DEFAULT nextval('public.the_boythesda_publisher_id_seq'::regclass);
+
+
+--
+-- Name: SYSREQ id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."SYSREQ" ALTER COLUMN id SET DEFAULT nextval('public.the_boythesda_sysreq_id_seq'::regclass);
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: orders_order id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders_order ALTER COLUMN id SET DEFAULT nextval('public.orders_order_id_seq'::regclass);
+
+
+--
+-- Name: orders_orderitem id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders_orderitem ALTER COLUMN id SET DEFAULT nextval('public.orders_orderitem_id_seq'::regclass);
+
+
+--
+-- Name: robokassa_successnotification id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.robokassa_successnotification ALTER COLUMN id SET DEFAULT nextval('public.robokassa_successnotification_id_seq'::regclass);
+
+
+--
+-- Name: userstuff_userprofile id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.userstuff_userprofile ALTER COLUMN id SET DEFAULT nextval('public.userstuff_userprofile_id_seq'::regclass);
+
+
+--
+-- Data for Name: GAME; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."GAME" (id, title, summary, "releaseDate", price, "Image", "scoreCritics", "scoreUsers", publisher_id, "sysReq_id") FROM stdin;
+1	The Witcher 3: Wild Hunt	Третья часть серии ролевых игр от CD Projekt RED, в основу которой заложен графический движок REDengine 3.Разработчики не обманывали, когда говорили, что с помощью нового движка построят огромный полностью открытый мир. Территориально третья часть серии в сорок раз больше второй и примерно на 20% «шире» The Elder Scrolls 5: Skyrim. Поездка из одного края в другой верхом на лошади займет у игрока минут сорок. Здесь же не лишним будет отметить, что REDengine 3 обеспечил игру новой потоковой технологией и тем самым избавил ее от экранов загрузки.История, равно как и мир, не разбита на главы и акты. Геральт вернул себе память и больше не заинтересован в работе на «фракцию». Иными словами, главный герой стал свободным и теперь вправе сам решать, куда ему идти и чем заниматься. Собственно, суть The Witcher 3 отражена в названии – Wild Hunt или «Дикая охота». Геральт отправится изучать родной мир, по ходу дела будет сражаться с монстрами и раскрывать тайны, почти как в книгах Анджея Сапковского. Однако, несмотря на нелинейность сюжета, разработчиками было принято решение удвоить количество повествовательных видеовставок, растянув их на сто с лишним часов.Как уже говорилось выше, Геральт может пойти туда, куда захочется. Но с поправкой на то, что уровень врагов не подгоняется под игрока. И в высокоуровневых локациях на первых порах ему делать нечего. Вообще, на своем пути Геральт будет встречать как монстров и животных, так и людей. Если герой представляет для нейтрального существа опасность, оно нападет первым. Если нет, может запросто пройти мимо. Разработчики говорят, что поведение врагов зависит от множества факторов, одним из которых является смена дня и ночи. А еще в The Witcher 3 будут лошади и лодки. Оба транспортных средства подвержены улучшениям.Что касается сражений, то чем больше Геральт знает о противнике, тем быстрее он находит слабые места. В The Witcher 3 у главного героя девяносто шесть боевых анимаций (во второй части их было двадцать). Поэтому, дабы избежать задержек, в боевую систему внесли три существенных изменения. Теперь каждый удар закреплен за конкретной кнопкой. Все движения одинаковы по протяженности. А сам прием можно прервать в любой момент, чтобы заблокировать удар противника или уклониться от него. Кроме того, в бою Геральт больше не может бегать и перекатываться. Старую систему заменили быстрые удары и увороты.	2015-05-19	1900	gamePages/cn-UogktVSkCp56NefmtCQ.jpeg	10	10	1	1
+2	Assassin's Creed 2020		\N	3000	gamePages/4gabSZaEEgbVGxwD-aRxig.jpeg	0	8	2	2
+3	Red Dead Redemption 2	Продолжение вестерна Red Dead Redemption от Rockstar. Возьмите на себя роль преступника Артура Моргана и узнайте историю банды «Ван дер Линде», которая грабит, сражается и крадет во имя выживания на просторах самого сердца Дикого Запада, пока цивилизация подкрадывается все ближе и вытесняет легендарных разбойников с обжитых мест.	2018-10-26	1700	gamePages/VCWcLDopPY6j_abJ82vryg.jpeg	10	9	3	3
+4	The Elder Scrolls 5: Skyrim	Новая часть популярнейшей серии фэнтезийных ролевых игр The Elder Scrolls, события которой разворачиваются в провинции Скайрим. The Elder Scrolls 5 создана на новом движке компании Bethesda, Creation Engine, и является сиквелом к The Elder Scrolls 4: Oblivion. Сюжетная же завязка следующая: в «Древних Свитках» было предречено возвращение в Тамриэль драконов, но все успешно проигнорировали пророчество, занимаясь междоусобными войнами. А теперь слишком поздно что-либо исправлять – драконья династия вернулась и жаждет крови. Провинция Скайрим, обитель нордов, теперь в опасности.	2011-10-11	2900	gamePages/kkAOdYfR6BEl61tKPHu3VQ.jpeg	10	9	4	4
+5	Resident Evil 3: Nemesis	Джилл Валентайн, бывшая сотрудница спецназа S.T.A.R.S., пытается спастись бегством из руин Ракун-Сити... На ее пути - сотни кровожадных зомби, злобных мутантов и безжалостное создание Немезис, самый совершенный монстр, когда-либо появлявшийся в застенках корпорации Umbrella. Выжить в этом аду - практически невыполнимая задача даже для самых опытных бойцов. Героине придется использовать весь арсенал доступных средств, чтобы выбраться из запертого города и не умереть от воздействия чудовищного вируса, превращающего людей в бездушных тварей...	2001-04-16	2700	gamePages/IynWwaG6r7Kyc0KmPLNHDw.jpeg	0	9	5	5
+6	Grand Theft Auto 5	Продолжение популярнешей серии криминальных экшенов в открытом мире от Rockstar. По сравнению с предыдущими играми серии в Grand Theft Auto 5 куда больше всякого рода «настроек» и вариантов кастомизации. Заметно преобразилась боевая система, а горожане теперь могут вызывать полицию. В пятой появилась возможность ходить на йогу, кататься на мотоциклах и играть в гольф. В общем, отдыхать и расслабляться. Вернулась система собственности, а вместе с ней мини-игры и бесконечные сайд-миссии.В дополнение к этому в GTA 5 реализованы эффектные стратегически-кинематографичные кражи, превратившие игру в самое крупное по своему размаху воплощение серии. Что касается главных героев, игрок сможет переключаться между ними в перерывах между миссиями. У каждого из центральных персонажей игры есть уникальный набор умений. Майкл, к примеру, может на время превращаться в Макса Пейна и стрелять по врагам в режиме «Bullet Time». Франклин умеет водить машину в «slow-mo». А Тревор, сражаясь с противниками в ближнем бою, легко переходит в режим берсерка. Каждая из этих способностей привязана к специальному счетчику, по мере заполнения которого она становится сильнее.В GTA 5 реализован «drop-in drop-out»-мультиплеер и масса других социально-многопользовательских функций.	2013-09-17	2900	gamePages/Tf0mwt9jPRX8OLPMsWupgQ.jpeg	10	9	6	6
+7	Need for Speed: Heat	Столкнитесь с лучшими силами полиции и покорите мир уличных гонок в Need for Speed: Heat — игре об уличных гонках, где закон меняется с заходом солнца. Днём в Палм-Сити проводятся разрешённые соревнования Speedhunters Showdown, где вы можете заработать деньги на модификации и улучшения для своих машин. Ночью же проходят нелегальные уличные гонки, которые приносят вам репутацию, обеспечивающую доступ к крупным событиям и лучшим деталям.	2019-08-11	1700	gamePages/iHIlQUgFE3DqiBrZFaPkpg.jpeg	8	6	7	7
+8	Корсары: Черная метка	Продолжение легендарной серии ролевых игр «Корсары» с участием разработчиков оригинальных частей франчайза. Представляет из себя ролевую игру с открытым миром про карибскоих пиратов в XVII веке. Разработчики обещают наделить игру новыми идеями, механиками и элементами, которую придадут ей больший реализм. В основе проекта «Корсары: Черная метка» — присущая эпохе расцвета пиратства жестокость и сексуальная составляющая, интересная и сложная система фехтования и использования огнестрельного оружия, открытый игровой мир с генерацией игровых событий и изменением геополитической обстановки в результате действий игрока. Исследование Карибского бассейна, интересный сюжет, тайны морских глубин, сокровища, опасности, абордажи, бордели, ром, азартные игры, корабль-призрак, Кракен — это и многое другое ждет игроков в «Корсарах: Черная метка».	\N	2800	gamePages/RtrZSdh0D2hvK8C_X8Avyw.jpeg	0	8	8	8
+9	S.T.A.L.K.E.R. 2	Официальный сиквел S.T.A.L.K.E.R.	\N	1600	gamePages/ZoLESHlqry9Vh-e28hVNVw.png	0	9	9	9
+49	Far Cry 3	Игра расскажет нам историю Джейсона Броди, оказавшегося по «счастливой» случайности на тропическом острове. Разработчики утверждают, что все события, происходящие здесь, будут напрямую зависеть от поступков игрока. Вы можете пойти даже против своих союзников. В этом случае сюжет будет развиваться совсем по-другому.	2012-11-28	1200	gamePages/8QHxT3Bh0L81NdnJ6bKgZA.jpeg	9	9	2	49
+10	Metro Exodus	Шутер от первого лица с элементами сурвайвал-хоррора и стелс-экшена, продолжение популярной игровой серии Metro от украинских разработчиков 4A Games. Действие игры разворачивается сразу после событий Metro: Last Light. Главный герой с группой выживших ордена «Спарта» отправляется в путешествие на бронированном поезде «Аврора» далеко на восток, чтобы найти новое место для жизни в постапокалиптической России. Игроку предстоит защищать пассажиров поезда от нападений мутантов и разбойников, искать припасы и новое место для поселения. Разработчики обещают просторные локации для исследования, расширенный арсенал, цикл смены дня и ночи, динамическую систему погоды и смену сезонов времен года по мере продвижения по сюжету. В игре не будет полноценного открытого мира, но игроки получат гораздо больше свободы, чем раньше. В процессе прохождения линейные уровни будут сменяться открытыми и нелинейными, перемещение между которыми будет осуществляться на упомянутом поезде. Классический геймплей серии получит, таким образом, элементы песочницы и выживания.	2019-02-15	2600	gamePages/FXE-bXvcZh-8b-5sZBhWOw.jpeg	10	8	10	10
+11	The Lord of the Rings - Gollum		\N	2000	gamePages/d3x-FDNmxl9xRXKKDO9OpA.jpeg	0	7	11	11
+12	Beauty And Violence: Valkyries	Настраивайте своих героинь с помощью редактора персонажей: меняйте лицо, пропорции тела, прически, макияж, мимику и многое другое. Также не забудьте выбрать снаряжение из множества различных видов доспехов и оружия. Кроме этого, вы можете контролировать прогрессию своей Валькирии через различные «деревья навыков». После того как завершите настройку и подготовку своих персонажей, вы можете отправлять их на сражения с многочисленными монстрами и сложными боссами. Пройдите свой путь через разнообразные уровни и разрежьте на куски сотни врагов.	\N	1000	gamePages/XbW-ooVc7KAYZnqqR68XFg.jpeg	0	7	12	12
+13	Star Wars Jedi: Fallen Order	Игра Star Wars Jedi: Fallen Order, рассказывает историю об одном из последних членов Ордена Джедаев, падаване Кэле Кастисе, уцелевшим в ходе Приказа 66, действия игры проходят вскоре после событий Звездные войны: Эпизод III - Месть Ситхов.Вам предстоит скрываться от Империи, чьи грозные инквизиторы охотятся за вами. Развивайте способности Силы, совершенствуйте мастерство владения световым мечом и разгадывайте древние тайны давно ушедшей цивилизации, чтобы приумножить свои знания о Силе. Лишь тогда вы сможете начать возрождать Орден Джедаев. Но помните: Империя будет неотступно следовать за вами.	2019-11-15	1100	gamePages/7loaZTzTc9zICQFeTfFsMA.jpeg	9	8	7	13
+14	Cyberpunk 2077	Киберпанковая ролевая игра от CD Projekt RED, которая базируется на фундаменте одноименной настольной ролевой игры за авторством Майка Пондсмита, принимающего непосредственное участие в творческом процессе. Поклонники заправского киберпанка могут рассчитывать на нелинейную историю, правдоподобный и брутальный мир для взрослой аудитории, глубокую ролевую систему, вдохновленную настольным побратимом, огромный арсенал кибернетических имплантатов и оружия, поддающегося модификации, и присутствие различных классов персонажей с возможностью создания в отличие от The Witcher своего собственного героя.	2020-09-17	2300	gamePages/Ryrrx206WNZbVZv6yow2JQ.jpeg	0	9	14	14
+15	Fallout 4	Ролевой экшен, продолжающий историю вселенной Fallout. Последний житель 111 убежища оказался вне крепких стен, в не самой дружелюбной среде. Каждое ваше решение принесет определенные последствия, будьте готовы к неожиданным встречам и находкам на территории пустошей. Добыча ресурсов и их последующее использование позволит вам создать сотни полезных предметов, а умелое использование различных примочек в бою позволит вам сохранить себе жизнь или же помочь бедолагам. На создании уникального героя ничего не закончится, возглавьте свое поселение! Развивайте его вместе с теми, кого удалось спасти. В любой момент вы можете резко изменить курс и снова отправиться в самовольное путешествие по огромному миру.	2015-10-11	1400	gamePages/jUH7ctVCPlU20wZnQ58_UQ.jpeg	10	8	4	15
+16	The Witcher	Главный герой – Геральт, Ведьмак из Ривии, профессиональный истребитель чудовищ. Он делает свою работу не из лучших побуждений или стремления сделать мир чище – он просто зарабатывает себе на жизнь. Чтобы на равных противостоять упырям и вурдалакам, ведьмаков воспитывают с детства. Причем из сотни детей, начавших обучение, выживают лишь десять. В арсенале Ведьмака – обычное и серебряное оружие, наркотики и эликсиры, смертельные для неподготовленного человека, колдовские «знаки», способные управлять другими существами. Игрок сам выбирает, какими приемами Геральт будет владеть лучше. Шесть боевых стилей, десятки различных зелий, изменяемое оружие и магия – все это поможет одержать победу над любым противником. Особое удовольствие получат любители динамичного боя и зрелищных способов уничтожения противника (к примеру, игрок сможет обезглавить врага, перерезать ему горло, выпустить кишки, посадить на кол, размозжить голову и т. д.).Система боя основана на реальных средневековых боевых тактиках. Для того чтобы сражения выглядели реалистично, в работе над анимацией принимали участие специально приглашенные мастера восточных единоборств и специалисты боя на мечах. Сюжет игры разрабатывался при участии самого Анджея Сапковского. В этом удивительном фэнтезийном мире нет четкой границы между добром и злом. Все решения игрока и его репутация формируют уникальную сюжетную линию с тремя возможными концовками.	2007-10-24	1600	gamePages/zmSKLaihAMRNZokXBgochw.jpeg	9	9	16	16
+17	Terminator: Resistance	Официально лицензированная игра по вселенной Терминатора. События Resistance разворачиваются спустя 30 лет после судного дня в Лос-Анжелесе, игрокам необходимо взять на себя роль Джейкоба Риверса — рядового из сопротивления, которого Скайнет отметил своей основной целью, представляющей угрозу для искусственного интеллекта.	2019-11-15	2100	gamePages/-eb_fCpl3ewKmEW0dIysoA.jpeg	0	7	17	17
+18	Euro Truck Simulator 2	Euro Truck Simulator 2 подарит вам незаменимый опыт управления самыми мощными машинами, когда-либо появлявшимися на шоссейных магистралях и автобанах Европы. Вы пройдете нелегкий путь от энтузиаста-дальнобойщика до обладателя собственной транспортной империи. Настраивайте грузовиков, расширяйте свой автопарк, нанимайте водителей, покупайте гаражи и исследуйте дороги — вот лишь малая часть того, чем вы можете заняться в Euro Truck Simulator 2. В особенности игры стоит отнести большую территорию — от Великобритании до Польши, тысячи километров реальной дорожной сети с сотнями известных достопримечательностей, а также широкие возможности для тюнинга и стайлинга грузовиков (от увеличения производительности до замены фар, гудков и выхлопных труб).	2012-10-24	1000	gamePages/B_iMPjAeblsKxXYajh0nig.jpeg	8	9	18	18
+19	Resident Evil 2	Вторая часть замечательного хоррор-экшена. Выход оригинальной Resident Evil 2 состоялся в 1998 году, но в 2019 году она вернулась в совершенно новом облике. Обновленная версия преобразила знакомый городок Раккун-Сити, благодаря новому движку - RE Engine. Также теперь вы сможете пройти обе компании за Леона Кеннеди и Клэр Редфилд с видом от третьего лица, чтобы лучше рассмотреть ужасающих монстров.	1999-02-19	1800	gamePages/yZyBlho-krVM6s3UyWRpBA.jpeg	10	9	5	19
+20	Subverse	Эротическая Sci-Fi пародия, в которой вы управляете своим собственным звездолётом, наполненным самыми горячими малышками во вселенной. Исследуйте обширную галактику, наполненную различными отморозками и древними загадками, прежде чем расслабиться в своих апартаментах с вашей любимой инопланетной вайфу.	\N	2700	gamePages/rXClmrzlaGOSTNPT8BT8hg.jpeg	0	8	20	20
+21	The Outer Worlds	Однопользовательская научно-фантастическая ролевая игра с видом от первого лица от Obsidian Entertainment. В The Outer Worlds вы пробуждаетесь после гибернации на корабле поселенцев, пропавшем по пути к Альциону — самой дальней земной колонии на краю Галактики. Герой оказывается в центре заговора, который угрожает существованию всей колонии. Созданный вами персонаж сможет повлиять на ход этой истории, исследуя космос и встречая различные группировки, которые сражаются за власть. В The Outer Worlds важное значение имеет сюжет, и его развитие определяется действиями игрока. Принятые решения отразятся на судьбах персонажа, спутников и концовке. Существует система недостатков: игра анализирует ваши действия и определяет, что вы делаете хуже всего. Благодаря этой системе вы становитесь уязвимы к различным факторам, но взамен получаете бонусы. В игре можно встретить разных персонажей и рекрутировать их в свою команду. Важную роль играет исследование мира, населенного враждебными чудовищами, появившимися после неудачной попытки провести терраформирование двух планет колонии. В The Outer Worlds игрок может заполучить собственный космический корабль и перемещаться между различными поселениями, космическими станциями и другими локациями.	2019-10-25	1200	gamePages/aMkfBIndZuLj_owh8i35rw.jpeg	0	8	21	21
+22	The Sims 4	Новая часть «симулятора жизни» от Electronic Arts. Создавайте уникальных персонажей в мощном редакторе. Проектируйте невероятные дома и обставляйте их по своему вкусу. Делитесь своими творениями с другими игроками. Ваш сим может выражать эмоции, а также испытывать разнообразные эмоциональные состояния под влиянием других симов, взаимодействий, различных событий, воспоминаний или даже выбранной одежды и окружающих объектов. Разнообразные города не дадут вам скучать. Исследуйте их, заводите новых друзей, посещайте общественные места и превращайте историю в жизнь.	2014-01-09	2100	gamePages/UDWWFg__vdmulgoQ3RLCOg.jpeg	8	8	7	22
+23	Disco Elysium	Детективная адвенчура с элементами изометрической RPG, где игроки смогут погрузиться в нуарную атмосферу преступного города. В роли потерявшего памяти детектива Бенни Шитфингерса, вам предстоит спасти город от взрыва.	2019-10-15	2900	gamePages/MspdTZAY1gwEAB8DwJLi0Q.jpeg	0	7	23	23
+24	Grand Theft Auto 6	Продолжение популярнешей серии криминальных экшенов в открытом мире от Rockstar.	\N	2600	gamePages/w1Vb9emLXvx3Hye_3YhkTw.png	0	8	6	24
+40	Sekiro: Shadows Die Twice	Приключенческий экшен от третьего лица, который создается под руководством известного геймдизайнера Хидетаки Миядзаки. Игроки отправятся в Японию периода Сэнгоку, когда страну охватили кровавые бои за власть. Вы возьмете на себе роль одинокого воина по имени Секиро, задача которого спасти своего юного господина.	2019-03-22	2800	gamePages/aoGGIC7ZDa_jPLlglchBrA.jpeg	10	8	40	40
+25	S.T.A.L.K.E.R.: Shadow of Chernobyl	2012 год. Шесть лет прошло с момента Второй катастрофы, затмившей события апреля 1986 года.Действие игры происходит в Чернобыльской зоне отчуждения, превратившейся из места, где ломались судьбы, в угрозу всему человечеству. Свои тайны Зона раскрывает неохотно, через силу, и редкий герой сможет добраться до самого ее сердца и узнать – какая опасность поджидает его там?Опасность, по сравнению с которой мародеры и вражеские группировки, все монстры и аномалии Зоны покажутся лишь подготовкой к встрече с чем-то более фатальным и пугающим.А пока... Готовься, герой. Собирай артефакты и торгуй, прощупывай дорогу и проверяй тылы, хватай рентгены и сражайся – но только выживи! И тогда, быть может, если будешь настойчив и особо везуч, ты узнаешь – почему все это свалилось на тебя.Основные особенности: Живой мир: виртуальные монстры и сталкеры мигрируют по Зоне, наравне с героем занимаются повседневными делами. Свобода перемещений по миру и по сюжетной ветке, ограниченная лишь желанием и возможностями игрока Знакомый и близкий мир постсоветского пространства Реальные объекты Чернобыльской зоны отчуждения – город энергетиков Припять, ЧАЭС, комплекс загоризонтального обнаружения "Чернобыль-2" и другие Атмосфера мистической таинственности и постоянной опасности Несколько вариантов концовок Система погодных эффектов и смены дня и ночи Фотореалистичная графика, помогающая глубже погрузиться в атмосферу игры Реальная физика полета пули, большой арсенал реальных прототипов оружия Наряду с традиционными режимами сетевой игры, уникальный режим в антураже игры – сбор артефактов Широкие возможности редактора карт сетевой игры	2007-03-19	1700	gamePages/x7lBqcy-hp-_Eb723eJHnw.jpeg	9	9	25	25
+26	Detroit: Become Human	Новая адвенчура от студии Quantic Dream, в которой любая сюжетная ситуация может разрешиться одним из внушительного множества вариантивных исходов. Развитие ситуации зависит только от принимаемого вами выбора. Игра исследует вопросы человечности и саму суть того, кем и чем является человек. Это не просто организм с множеством органов и нервов, это нечто другое, способное чувствовать, думать, осознавать себя. В таком случае, может ли что-то другое стать человеком? Например, робот, результат человеческого мышления. Сможет ли он обзавестись душой?	2018-05-25	3000	gamePages/t02nS9mZdlhA6YzrTBdoRg.jpeg	8	8	26	26
+27	S.T.A.L.K.E.R.: Call of Pripyat	Описание игры. События S.T.A.L.K.E.R.: Зов Припяти стремительно развиваются после того, как Стрелок разрушил проект «О-Сознание». Вместе с этим удалось открыть почти безопасную дорогу в самое сердце Зоны. Правительство не могло оставить это без внимания и решило отправить туда своих солдат, чтобы раз и навсегда подчинить себе эти земли, наполненные секретами и могущественными артефактами. Но Зону не так-то легко заставить подчиняться своим правилам. Первая группа военных по плану должна была отправиться на вертолётах в разведку, чтобы составить карту и отметить все аномальные поля. После этого, по плану военных, вторая группа солдат должна была отправиться на тотальную зачистку всего и вся. Но уже на первом этапе возникли непредвиденные обстоятельства. Вертолёты повстречали незнакомого врага и разбились. В само сердце Зоны был отправлен специальный агент, чья задача состоит в расследовании таинственного провала операции. Теперь всё зависит только от игрока. В его власти выбирать все дальнейшие поступки своего протеже.Зона умеет хранить свои секреты. На лёгкое путешествие не стоит и рассчитывать. Уникальность игры. Фото-реалистичная Зона отчуждения – воссозданные по реальным прототипам город Припять, железнодорожная станция Янов, завод "Юпитер", село Копачи и др. Новый сюжет, ряд уникальных персонажей. Расширенная система побочных квестов. Новые монстры химера и бюрер. Новое поведение и возможности всех монстров. Выбросы существенно влияют на мир Зоны Добавлена функция сна в игру. Игра стала намного более оптимизирована и стабильна, в отличии от предыдущих частей. Новый интерфейс игрока. Возможность продолжить игру после ее прохождения в режиме freeplay.	2009-01-10	2300	gamePages/RpQiqzEMzkFpUnfIN-eYeQ.jpeg	9	9	27	27
+28	Fast & Furious Crossroads	Игра по мотивам достаточно популярной серии кинофильмов «Форсаж». Главные роли в проекте сыграли такие голливудские актёры как Вин Дизель, Мишель Родригес и Тайри Гибсон. За разработку игры отвечала студия Slightly Mad Studios, подарившая геймерам Project CARS и Need for Speed: Shift.	\N	1800	gamePages/_6YpzylC_CPf395-YBkKiw.jpeg	0	5	1	28
+29	Mafia 2	Игрок отправляется в Соединенные Штаты Америки 1940-1950 годов, а точнее – в город Empire Bay. Именно там и начнет свое восхождение к вершинам криминального мира главный герой – сын бедного итальянского эмигранта Вито Скалетта. Будучи еще маленьким мальчиком, Вито не раз наблюдал за молодыми людьми, которые были одеты в шикарные костюмы и разъезжали на шикарных авто… Достигнув зрелого возраста и набравшись боевого опыта, перед нашим героем встанет выбор – в какую же «семью» влиться? В Винчи, Клементе или же Фальконе? Определившись, Вито начнет долгий и кровавый пусть к признанию и уважению. Mafia 2 – это, прежде всего, кражи, угон автомобилей, драки, перестрелки, погони и убийства, которые происходят на территории города площадью в 25 квадратных километров, где игрок наделен практически полной свободой передвижения. Следует отметить, что игровое окружение реализовано с особым вниманием – автомобили, предметы быта, одежда и даже реклама отвечают историческим реалиям.	2010-08-23	1800	gamePages/WAckiitQBzRqS6BhzUxLtw.jpeg	7	9	29	29
+30	Doom Eternal	Полноценный сиквел Doom 2016 года. Монстров будет вдвое больше, а также на этот раз Ад развернется на Земле.	2020-03-20	1100	gamePages/VTpf473_KQemiYCyUP_LCQ.jpeg	0	9	4	30
+31	Forza Horizon 4	Новая часть гоночной серии Forza Horizon, которая может порадовать игроков динамической сменой сезонов года и автопарком из более чем 450 моделей автомобилей.	2018-02-10	2900	gamePages/jfeOWZRgZR2pOwBy7oK72A.jpeg	9	8	31	31
+32	Black Mesa	Модификация, которая вполне тянет на звание полноценной игры - Black Mesa полностью воссоздает оригинальную Half-Life на движке Source.	2012-09-14	1200	gamePages/bxcp08lB2zLl8GBvq_Zp-Q.jpeg	9	9	32	32
+33	Fallout: New Vegas	Никаких родственных связей с третьей частью у Fallout: New Vegas нет – сюжетный курс тут взят абсолютно другой, разве что пост-апокалиптическая вселенная осталась на месте. Сюжет крутится вокруг Новой Калифорнийской Республики, жителей Нового Вегаса и рабовладельческой организации «Легион Цезаря». Это три стороны конфликта, которые борятся за власть на пустынных просторах штата Невада. База НКР расположена в международном аэропорте МакКаррэна, «Цезарь» обитает где-то в Вегасе, а супер-мутанты сидят в месте, которое прозвали «Черной Горой» (Black Mountain), где раньше была радиолокационная станция. Нелинейность, свобода действий и несколько концовок, разумеется, входят в комплект.	2010-10-18	1800	gamePages/QsGEDmP_t6P3SZ_GscEyzg.jpeg	9	9	4	33
+34	Grand Theft Auto 4	Четвертая часть серии Grand Theft Auto, помимо консолей посетившая и персональные компьютеры.Действие четвертой части GTA происходит в Liberty City, а сюжет повествует о тяжелой судьбе простого сербского парня Нико Белика (Niko Bellic), волею случая заброшенного в поисках американской мечты в США. Фирменный геймплей, свобода действий, огромный город для детального исследования – все для вас. Плюс, маленький бонус – мультиплеер GTA 4 в версии для PC пополнился новыми режимами игры. Видимо, это плата за мучительные месяцы ожидания.	2008-04-28	1200	gamePages/cCkyGZCnHnVaHxBbs0d84Q.jpeg	9	9	6	34
+35	Dying Light 2	Сиквел паркур-экшена Dying Light, который на этот раз порадует глубоким сюжетом, проработанным сеттингом и ролевыми элементами. Нас ждет увлекательный постапокалиптический сюжет про разгоревшуюся в городе анархию, на смену которой пришли варианты самоуправления с городскими бандами. Главному герою предстоит своими решениями определять развитие событий в городе. Каждое решение, принятое в процессе прохождения, приведет к ощутимым последствиям. Но если в течение дня идет борьба людей, то ночью, разумеется, на улицы вылезают монстры.	\N	1500	gamePages/4KdK2lf5XEY-SptTYM64aA.jpeg	0	9	35	35
+36	Need for Speed: Most Wanted (2005)	Need for Speed: Most Wanted во многом похожа на Underground, за исключением одного момента: сериал вернулся к своим корням и игрокам снова доведется поучаствовать в полицейских погонях в роли, разумеется, нарушителя порядка. Плюс появилась специальная система, награждающая водителей за наиболее рискованные маневры, совершаемые прямо под носом у полицейских, а все трассы были специально заточены под такой стиль игры. Игровых режимов в Most Wanted ровно восемь штук: Multiple point races, Toll booth races, Speed trap photos, Outrun, Outrun best route, Circuit, Sprint и Knockout, - а регионов, по которым доведется прокатиться - четыре. Кстати, гонки проходят в самых разнообразных погодных условиях, но без смены времени суток. До кучи Electronic Arts присовокупила к игре массу разнообразных машин: от японского импорта до всевозможной экзотики.	2005-11-15	1200	gamePages/sZ_AeEJ-4C_xgMI_GwzT4A.jpeg	9	9	7	36
+37	The Witcher 2: Assassins of Kings	Продолжение одной из лучших ролевых игр для персональных компьютеров, разработанное на новом графическом движке. Кроме того, сиквел предлагает нелинейную кампанию с 16-ю концовками, прохождение которой потребует 40 часов, интересные квесты, полностью переработанную боевую систему и многое другое.	2011-05-16	2400	gamePages/82zwrsZn7vaICm-7JPg-hw.jpeg	9	9	16	37
+38	Assassin's Creed: Odyssey	Новая часть серии Assassin's Creed, события которой разворачиваются в Древней Греции. По масштабам Odyssey существенно превосходит свою предшественницу в лице Origins.	2018-05-10	1300	gamePages/_Deeg4HN6WS1uDNPA3t5HQ.jpeg	9	7	2	38
+39	Dying Light	Dying Light – триллер от первого лица, события которого происходят на просторах огромного и опасного мира. В течение светового дня вам предстоит путешествовать по руинам городов, разыскивать припасы, создавать оружие. Ночью же охотники превращаются в добычу, ведь это время, когда на улицах господствуют жертвы эпидемии. Самые пугающие твари приходят во тьме, и потребуется использовать все без остатка, чтобы продержаться до первого луча солнца. Особенности игры В течение дня ничто не помешает вам перемещаться по миру в поисках оружия и припасов. Ночью же мир полностью меняется: зараженные становятся злее и многочисленнее, во тьме рыщет воплощенное зло. Идя по следу или, наоборот, уходя от преследователей, вы сможете перемещаться по миру так, как вам удобно, – перепрыгивать с дома на дом, взбираться по стенам, подкрадываться к ничего не подозревающим врагам. Dying Light предлагает открытый и разнообразный мир, на его просторах обитают самые разные противники и разворачиваются драматические события. Ресурсы тут ценятся на вес золота, а зараженные – далеко не единственная угроза. В вашем распоряжении – широкий ассортимент разнообразных средств защиты и нападения: ножи, биты, топоры, кувалды, а также всевозможное огнестрельное оружие. Dying Light поддерживает совместное прохождение – четырех игровых персонажей можно настроить под любой стиль игры. Зачем использовать в бою простой гаечный ключ, если можно обернуть его проводом и получить самодельный шокер? Система создания предметов в Dying Light позволяет вам проявить фантазию и сделать более мощное оружие и полезную экипировку. Dying Light создается на Chrome Engine 6 – новейшей версии собственной технологии Techland, предназначенной для работы на консолях нового поколения и с библиотеками DirectX 11.	2015-01-27	1300	gamePages/hV3TA_hdCFNGQt1OC1UkRw.jpeg	7	9	39	39
+41	Death Stranding	Новый проект японского геймдизайнера Хидео Кодзимы и его студии Kojima Productions. Отправляйтесь в необычное приключение и возьмите под свой контроль рабочего Сэма Бриджеса, который покоряет смертельный и загадочный мир, полный посланников смерти. В главных ролях такие знаменитости, как Норман Ридус, Мадс Миккельсен, Линдси Вагнер, Леа Сейду и Гильермо дель Торо.	2019-08-11	1500	gamePages/BYdkNhrLvynmBt5AA_PlBw.jpeg	8	8	26	41
+42	Dragon Age: Inquisition	Когда небеса буквально развернутся над смертными, на землю ступит хаос. Тедас и так является землей раздора, где постоянно бушует война, поглощающая все больше жизней. Теперь на ее счету будут и души, поскольку демоны и их приспешники уже успели разбрестись по свету, дабы посеять семя зла во всех его уголках. Раз уж сами отродья, что вызывают животный страх, выбрались из своего мерзкого мира, свалившись с небес, защищать себя придется самим, а если хватит силы духа, то и всех окружающих. На защиту Тедаса встает возглавленная вами инквизиция, несущая покой всем, кто оголил меч и выпустил когти против невинных. Но что есть вина? Это вам и проедется решить, попутно изменяя облик всего Тедаса, чутко реагирующего на любые ваши поступки. Если целый мир готов преобразиться по одному взмаху меча, то что же будет с вашими сокомандниками, которые преследуют лишь свои интересы внутри вашего отряда. Узнаете ли вы мотивы каждого из них? И снова это зависит лишь от вас.	2014-11-17	1000	gamePages/m1b8KiN_apKDKKO0s4fuyg.jpeg	10	8	7	42
+43	Microsoft Flight Simulator	Новое поколение одного из самых популярных симуляторов полёта. Множество различных самолетов — от лёгких до широкофюзеляжных, летайте на красивых и детализированных самолётах в реалистичном мире. Создайте свой план полёта и летайте в любую точку планеты. Летайте днём ​​или ночью и сталкивайтесь с трудными, очень реалистичными погодными условиями.	\N	3000	gamePages/K81ao_9nGKvzSm09sq6yDA.jpeg	0	8	31	43
+44	Resident Evil 4	Четвертая часть культовой серии action'ов, почтившая таки своим присутствием персональные компьютеры. Потрясающий геймплей, потрясающая (по крайней мере на консолях) графика, потрясающий звук - в общем, если при портировании игры не случится ничего криминального, то нас ждет по меньшей мере хит.	2005-10-01	2400	gamePages/3Rzpj2k_17jGeJybMa1FFw.jpeg	7	9	5	44
+45	Elden Ring	Экшен с ролевыми элементами от студий FromSoftware и Bandai Namco Entertainment, события которого разворачиваются в фэнтезийном мире. В разработке игры принимал участие Хидэтаки Миядзаки — родоначальник серии Dark Souls, и Джордж Р. Р. Мартин — автор популярной книжной серии «Песня льда и огня».	\N	1600	gamePages/McHNyl69KXSCY6lOiZWvLQ.jpeg	0	9	1	45
+46	MechWarrior 5: Mercenaries	Продолжение некогда популярной серии однопользовательских экшенов MechWarrior. Действие игры разворачивается во время войны в 3015 году. Человечество сумело колонизировать обширную часть космоса, которая называется Внутренней сферой. В игре присутствует 5 фракций, называемые Великими домами, которые ведут борьбу за влияние над территорией космоса. Игроку предстоит в качестве наёмника оказаться в центре конфликта и сыграть немаловажную роль в этой войне. Как и в предыдущих частях серии, вас ожидают динамичные бои на огромных роботах в просторных локациях. По канонам серии, игроку предстоит не только воевать, но и улучшать и ремонтировать своего боевого робота.	2019-10-12	2700	gamePages/D24cwva0Tym8tCffmCGXbA.jpeg	0	7	46	46
+47	Borderlands 3	Возвращение оригинального шутера с «базилионом» оружий и совершенно новым увлекательным приключением. Прорвитесь через новые миры и врагов в качестве одного из четырёх совершенно новых Охотников за Убежищами, каждый из которых обладает глубокими ветвями навыков, способностями и индивидуальными настройками. Играйте в одиночку или присоединяйтесь к друзьям, чтобы сразиться с безумными врагами, собрать кучу добычи и спасти свой дом от самых безжалостных лидеров культа в галактике.	2019-09-13	1300	gamePages/GST7FEHBKP8NqwkfXPw99w.jpeg	8	8	29	47
+48	Monster Hunter: World	Продолжение популярнейшей серии Monster Hunter, в котором вам предстоит охотиться на огромных монстров. Открытый мир населен множеством разнообразных существ, многие из которых способны причинить вам серьезный вред. Начинайте сезон охоты на жутких монстров вместе со своими друзьями.	2018-01-26	1300	gamePages/V_DdU-rdYIw8dy-6yKWlTg.jpeg	9	7	5	48
+50	Kingdom Come: Deliverance	Ролевая игра с открытым миром в сеттинге средневековья. Действие игры разворачивается в 1403 году в Богемии (Чехия). Сюжет игры максимально приближен к реальным историческим фактам и поведает о Великом западном расколе и Гуситских войнах. Kingdom Come: Deliverance является нелинейной RPG, что означает полную свободу действий. Тут нет героев и злодеев, все поступки ограничиваются лишь вашей моралью. Также в игре присутствует гибридная система классов: вы можете создать любого воина в зависимости от своих предпочтений, вроде рыцаря-лучника или воина-барда. Разработчики подготовили уникальную боевую систему, основанную на приемах воинов XV века. Помимо всего прочего, ваш герой может заниматься кузнечеством, помогать людям, работать в поле или влиять на ход истории на передовой. Таким образом, Kingdom Come является максимально аутентичной адаптацией исторических событий средневековой Европы.	2018-02-13	1000	gamePages/_ItsEMdzGwiJTfMvOfin0g.jpeg	9	8	10	50
+51	Grand Theft Auto: San Andreas	Продолжение культовой серии, повествующей о тяжелых буднях угонщика автомобилей. В новой части вы можете вжиться в роль афроамериканца по имени CJ и отправиться в San Andreas (состоящий из трех частей, прообразами для которых в свою очередь стали реальные американские города) для решения семейных проблем. Которые, как это часто бывает, бросают нашего героя в совершенно немыслимые приключения, «знакомят» с верхами мафии и заставляют организовать собственную группировку. Именно последней в игре уделено наибольшее внимание – впервые в истории серии вы можете пользоваться услугами напарников и брать под свой контроль куски города, в бою отнимая их у конкурирующих структур. Кроме того, разработчики разбавили быт игрока возможностью сделать прическу, подкачать мускулатуру (иначе герой превратится в жирдяя), покататься на велосипеде и покупать недвижимость, которой нашлось место и в предыдущей части. Ну а еще вам придется постоянно есть – в общем, все как в реальной жизни. Куча машин, самолетов, вертолетов и водного транспорта, а также немыслимое количество приятно проведенного времени – все это GTA: San Andreas.	2004-10-26	2200	gamePages/ZPHoZvrANkNGr-_ww2ZEQA.jpeg	9	9	6	51
+52	The Elder Scrolls Online	MMORPG в популярной фэнтезийной вселенной The Elder Scrolls.События The Elder Scrolls Online берут начало за тысячу с лишним лет до подвигов «драконорожденного» в Скайриме. В те далекие времена принц даэдра Молаг Бал (Molag Bal) вовсю пытался обернуть Тамриэль в свой идеальный демонический мир, однако теперь в его стройные планы суждено вмешаться игрокам, которые смогут примкнуть к одной из трех фракций – Эбенгарду (Ebonheart Pact), Доминиону Альдмери (Aldmeri Dominion) или Даггерфоллу (Daggerfall Covenant). За каждой из них, к слову, закреплены определенные расы – скажем, норды, аргониане и данмеры принадлежат к Эбенгарду, альтмеры, босмеры и каджиты «работают» на Альдмери, а орки, редгарды и бретонцы служат во благо Даггерфолла. Имперцы же, в свою очередь, находятся в состоянии войны со всеми тремя фракциями. The Elder Scrolls Online постарается совместить в себе элементы, свойственные как World of Warcraft и ее клонам, так и серии The Elder Scrolls, ставящей акцент на изучении полностью открытого мира. В игре будет воссоздана большая часть Тамриэля, включая Скайрим, Морровинд, Эльсвейр и Острова Саммерсет. Впрочем, не стоит питать ложных надежд по поводу уровня их проработки – разработчики признаются, что не все провинции и регионы предстанут на просторах The Elder Scrolls Online в полном размере. Напротив, они будут выстроены лишь частично, некоторые особенно большие зоны будут закрыты для посещений, хотя сотрудники Zenimax Online отмечают, что это – своеобразный задел на будущее, в котором найдется местечко для массивных дополнений. Затрагивая тему игровой механики, стоит отметить, что The Elder Scrolls Online будет предлагать предельно стандартный набор развлечений. В список входят – хождение по подземельям, выполнение квестов (благодаря «открытой структуре» некоторые задания вида «пойди и убей монстров у болота» тут можно выполнять даже без бесед с NPC), крафтинг, алхимия, седлание фэнтезийных существ (полетать по миру, правда, не удастся) и боевая система, не базирующаяся, однако, на схватках в реальном времени, а полагающаяся на использование ограниченного числа скиллов, подкрепленных «выносливостью» героя, затрачиваемой на каждое действие в бою. Набор опыта, классы персонажей и процедура прокачки, разнящаяся в зависимости от того, за какую фракцию вы выступаете, тоже имеются – по прикидкам разработчиков, игроки смогут достичь максимально возможного уровня примерно за 120 часов. PvP-часть аналогично присутствует – народ сможет даже принимать участие в осадах крупных имперских городов Сиродиила (де-факто главной PvP-арены), а также битвах за рудники и прочие прибыльные места, сулящие «победителям» неплохие бонусы. А что там насчет гильдий? Будут! «Темное братство», «Воры» и «Бойцы» непременно засветятся в The Elder Scrolls Online. Тайной пока остается лишь то, в какой форме они предстанут во вселенной MMO-игрушки. Все тутошние диалоги, кстати, будут полностью озвучены.	2014-03-04	1900	gamePages/FH1eTOYsOLItgwNQsZvmtA.jpeg	0	8	4	52
+53	Dragon Age: Origins	Замечательная ролевая игра от студии BioWare.Движок игры щеголяет огромной дальностью прорисовки, может отображать сотни персонажей одновременно и вообще - полностью трехмерен и жутко детализован. Одним из главнейших нововведений проекта является возможность переключения типа и внешнего вида сражений. Изначально игра проходится как заурядная RPG с видом от третьего лица, однако BioWare не была бы сама собою, если бы не разрешила в любой момент превратить заурядную потасовку в умную стратегическую баталию. Например, в сцене осады города камера переключается на вид сверху, позволяя главному герою и защитникам города ловчее расправляться с атакующими противниками. Dragon Age порадует игрока одиночной кампанией длительностью в 40-50 часов.	2009-06-11	900	gamePages/Hkg4kO0j8CEs8N50g8Cn2w.jpeg	9	10	7	53
+54	Gothic	Захватывающая ролевая игра от молодой студии Piranha Bytes откроет перед вами фэнтезийный мир сказочных стран. Вы будете бороться с орками, тролями и прочей нечистью. Всего в игре четыре класса: Warrior, Assassin, Magician, Psionic. Перспектива представлена от третьего лица.Всё началось с войны с орками, для победы в которой людям была нужна руда. Её добывали заключённые, у которых отняли будущее: жестокий король приказал магам навечно закрыть их на рудниках под волшебным куполом. Живым существам дорога сквозь него была открыта лишь в одном направлении - внутрь. Приказ был выполнен, но из-за роковой ошибки купол накрыл слишком большую территорию: в тюрьму превратилась целая страна.Под этим куполом суждено оказаться и вам. За что... А разве это важно? Ведь вы никогда не вернётесь в мир свободных. По крайней мере, так думают ваши судьи. Мы же думаем, что вам выпал шанс стать героем удивительных приключений. Героем великой легенды!	2001-11-15	2800	gamePages/wHnotiTEmh8N4bI9EiYPHQ.jpeg	0	9	54	54
+55	Half-Life: Alyx	Приквел к Half-Life 2, повествующий о приключениях Аликс Вэнс, напарнице Гордона Фримена, которая принимала участие в большинстве основных игровых событий Half-Life 2. В качестве организаторов зарождающегося сопротивления, вам необходимо продолжать заниматься подпольной научной деятельностью, чтобы иметь возможность создавать инструменты для тех немногих, кто осмелился бросить вызов Альянсу.	\N	2100	gamePages/oLxqnMF2H3jj1rofOHT-uQ.jpeg	0	6	55	55
+56	Far Cry 5	Еще одна игра культовой серии Far Cry. Местом действия является округ Хоуп в штате Монтана, Северная Америка. Игрок выступает в роли заместителя шерифа округа и вынужден противостоять радикальному религиозно-политическому культу, во главе которого стоит пастор Иосиф. Игровой процесс, ставший визитной карточкой серии, не претерпел серьезных изменений. Но нововведений достаточно: теперь можно брать с собой союзников и отдавать им приказы прямо во время боя. Верный товарищ – боевой пёс, также находится в распоряжении игрока. Впервые в серии: самолеты стали полностью управляемыми, а арсенал холодного оружия расширился. Если раньше игроку были доступны только разновидности Мачете или других больших ножей, то сейчас можно орудовать и бейсбольной битой. Среди огнестрельного оружия, игроку встретятся как хорошо знакомые по играм серии виды вооружения, так и абсолютно новые экземпляры. Транспорта тоже прибавится.	2018-03-27	2800	gamePages/bgcrVExNvLC6PNIhxWsxZQ.jpeg	7	8	2	56
+57	ATOM RPG	Постапокалиптическая ролевая игра, вдохновленная классическими представителями жанра: Fallout, Wasteland, Deus Ex и Baldur's Gate. По альтернативному сюжету игры, в 1986 году СССР и Западный блок были практически уничтожены в результате обмена ядерными ударами. После произошедшего апокалипсиса выжили немногие, и вы — один из них. Как и в легендарной Fallout, вам предстоит исследовать жестокий мир Пустошей, но уже на территории разрушенного Советского Союза. Несмотря на крах цивилизации, среди групп выживших зреет заговор, угрожающий Земле даже больше, чем едва не уничтожившая ее ядерная война. Вам предстоит предотвратить этот сценарий и разгадать зловещие тайны. В духе классических представителей жанра ATOM RPG позволит вам создать уникального персонажа благодаря развитой ролевой системе с набором взаимосвязанных характеристик и десятками навыков. В игре предусмотрены тактические пошаговые бои, исследование разнообразных локаций Пустошей, случайные ивенты, проработанные диалоги, большое число квестов с альтернативными вариантами прохождения и многое другое.	2017-11-28	2900	gamePages/hsBeGoQ4dWdLkR6ZjG3G2w.jpeg	0	8	57	57
+58	The Elder Scrolls 6	Новая часть популярнейшей серии ролевых игр The Elder Scrolls.	\N	2500	gamePages/ew-d1t1CHHX7xvyQitaqwA.jpeg	0	8	4	58
+59	Mortal Kombat 11	Mortal Kombat 11 содержит разнообразные настройки бойцов, позволяющие проводить более тонкую кастомизацию. Игра работает на новом движке и делает большой упор на использование оружия ближнего боя. Присутствует сюжетный режим.	2019-04-23	2600	gamePages/LvAvHns4x5dHkl2Zi_ukOQ.jpeg	8	8	39	59
+60	Metro 2033	В основе сюжета лежит одноименный постапокалиптический роман российского писателя-фантаста Дмитрия Глуховского. Итак, 2013-й год. Мировая ядерная война уничтожила все. Земля, воздух и вода отравлены радиацией и непригодны для нормальной жизнедеятельности. Но все же судьба дала горстке людей шанс, и они выжили в московском метрополитене. Оказавшись в нечеловеческих условиях, люди продолжали жить и бороться с невиданными доселе формами жизни.2033-й год. Целое поколение рождено под землей, станции метро превратились в города, были созданы коммуникации, люди занялись животноводством и торговлей – жизнь продолжала свое неуемное движение вперед. Однако стремление чуждых и кровожадных мутантов с поверхности грозило полным вымиранием людей, которые к тому же все чаще и чаще стали конфликтовать между собой. Все это отнимало у них остатки шансов на жизнь. Однако осталась последняя надежда – прорваться в центр метрополитена и попасть в Полис. Именно эта миссия волей судьбы возложена на нашего главного героя – Артема. Только от действий игрока будет зависеть дальнейшая судьба человечества как такового.	2010-03-16	1200	gamePages/bMySC_JWprtMLEfZj5_0tQ.jpeg	9	9	25	60
+61	S.T.A.L.K.E.R.: Clear Sky	Clear Sky рассказывает нам историю о событиях, произошедших за год до начала сюжета оригинального S.T.A.L.K.E.R.. Оказывается, мир в Shadow of Chernobyl был довольно мирным, а во времена, о которых поведает нам Clear Sky, Зона была намного враждебнее. Природа вокруг более активна: аномалии куда страшнее, а общий пейзаж стал не таким, каким он был в первой части. В игре появились некие пространственные дыры, в которых могут пропасть целые экспедиции сталкеров. Clear Sky представляет собой на 50 процентов новую территорию. Игроки получили возможность присоединиться к одной из восьми фракций и работать на нее. Впоследствии можно со своими людьми завоевывать важные локации и нападать на вражеские базы. Однако чтобы вас начали уважать, во фракции придется пройти по ранговой лестнице – с самых низов до почетных постов. В принципе, вступать в ряды фракции необязательно, но есть одно «но» - для успешного прохождения основной сюжетной линии нужно уничтожить одну из сильнейших группировок. Новые монстры, новая физика, усовершенствованный интеллект и даже поддержка DirectX 10-графики – вот то, что предложили нам разработчики в S.T.A.L.K.E.R.: Clear Sky.	2008-08-21	2400	gamePages/gbkHbRNODQvL5bRmM9S8rQ.jpeg	8	9	10	61
+62	Darksiders: Genesis	Ответвление серии Darksiders, предшествующее событиям первой части. Игрокам в роли Войны и Раздора предстоит отправиться на задание в Преисподнюю, чтобы попытаться остановить Люцифера, который намерен одарить огромной силой демонических правителей и нарушить тем самым баланс во всём мире.	2019-05-12	2800	gamePages/IacNPP_V3aUjduqJMo3HDA.jpeg	0	8	62	62
+63	Call of Duty: Modern Warfare (2019)	Перезапуск серии Modern Warfrare, в котором разработчики решили изменить вектор развития, сделав игру более реалистичной и поднимающей неоднозначные моральные вопросы. Игра игнорирует события предыдущих частей Modern Warfare, но при этом игроков ждут некоторые знакомые персонажи. И не забываем про мультиплеер, в этой части разработчики реализовали кроссплей между PS4, Xbox One и РС, а также подготовили кооперативный режим.	2019-10-25	2500	gamePages/3TXVqiZOlWFyX-dSlSm20w.jpeg	8	4	40	63
+64	Far Cry 4	Действие игры развернется в Кирате, вымышленном королевстве, что расположено прямо среди Гималаев. Играть придется за Эджея Гейла, попавшего в Кират из-за своего обещания, данного им умирающей матери. Согласно традиции, в игре не обойдется без харизматичного злодея. Им будет Паган Мин. Некогда лучший друг отца Гейла, на пару с которым они и устроили революцию, свергнув прошлого царя. А ныне единственный и деспотичный король Кирата. Обладая некой долей юмора, Паган Мин не убивает Гейла при их первой встрече. А решает устроить веселые игры, в течении которых вам предстоит уничтожить добрую половину солдат Мина, попытаться свергнуть его власть и добраться до тайн и сокровищ Гималаев. В far cry 4 большой упор сделан на многопользовательское взаимодействие игроков. Прямо посреди одиночной компании, игрок имеет право позвать друга на подмогу или же наоборот, отключить основную компанию и заняться с другом захватом постов. Не обойдется без взаимодействия игрока с окружающим миром. Как и ранее, на животных можно будет охотиться, дабы соорудить себе новую сумку или приманку для более крупного зверя. Но в отличии от прошлой части, игрок сможет использовать живой мир как свое оружие. Никто не мешает верхом на слоне раскидать десяток солдат Паган Мина или же подкинуть приманку одному из них, чтобы спровоцировать крупного зверя на атаку.	2014-11-18	1100	gamePages/iHOgxNXMhnrTedrKdQHvKw.jpeg	8	9	2	64
+65	Star Wars: Knights of the Old Republic	Безусловно, одна из лучших РПГ 2003 года. Девять возможных напарников, каждый со своей яркой индивидуальностью, множество побочных квестов с различными вариантами решения, четкая зависимость событий в мире от действий игрока. Несмотря на очень большую продолжительность игры, KOTR остается интересным до самой развязки, не переставая удивлять новыми, неожиданными решениями. Даже если Вы агрессивно настроены к вселенной Звездных Войн, эту игру стоит посмотреть.	2003-07-17	2300	gamePages/KSj2zW8YysD_Iw-tCpGUVQ.jpeg	9	10	65	65
+66	Dino Crisis	Три года назад пропал учёный, занимавшийся исследованием новой формы энергии. Правительство отправляет группу спецназа на небольшой тропический острове Айбис, с задачей найти и доставить доктора, а также извлечь все данные его исследований. Однако в результате его экспериментов произошёл сдвиг во времени, в результате которого на остров попали древние ящеры — динозавры. Возьмите на себя роль агента по имени Регина и примите участие в битве за выживание.	\N	2300	gamePages/mrEqEA3LwpLAcKxbTDn4lg.jpeg	0	9	5	66
+67	Diablo 4	Четвёртая часть популярной серии игр от Blizzard Entertainment. Сюжет игры разворачивается спустя много лет после событий Diablo 3, когда миллионы людей были уничтожены в результате столкновений между Небесами и Адом.	\N	2800	gamePages/cyrCJk9mNQCrwS7lB-uGHA.jpeg	0	8	67	67
+68	Escape from Tarkov	Хардкорный многопользовательский онлайн-шутер с элементами RPG и MMO, позволяющий играть как в одиночку, так и объединяться с другими игроками. События Escape from Tarkov разворачиваются на обособленной вымышленной территории — в Норвинской особой экономической зоне, в границах которой расположен город Тарков. Бывшая некогда важным экономическим центром и мостком между Европой и Россией, зона привлекла внимание крупных корпораций, движимых сомнительными целями. В результате политического противостояния между различными компаниями начались открытые военные столкновения с участием миротворцев ООН, внутренних войск МВД и двух частных военных корпораций — USEC и BEAR. Основа геймплея — противостояние упомянутых корпораций. Игроки могут погружаться в сюжетную часть в рамках отдельного мультиплеерного режима или проводить рейды на обширных локациях в поисках лута. Еще одна сторона конфликта — разрозненные банды Диких, состоящие из мародеров и убийц и патрулирующие локации. Для игры за них существует отдельный игровой режим. Escape from Tarkov является настоящим хардкорным шутером с реалистичной баллистикой, физикой пробитий, аутентичным поведением оружия (клин, перегрев, износ и т.п.). Игрокам доступна широкая система модификаций с богатым выбором обвесов, напрямую влияющих на поведение оружия. В случае гибели во время рейда игрок теряет всю экипировку, взятую на миссию. Соответственно, с тел убитых соперников можно снимать предметы, которые затем можно использовать или продать. Система прокачки позволяет повышать опыт и изучать новые навыки.	\N	2200	gamePages/gHT5OgraujL_59MbwmbKNw.jpeg	0	8	68	68
+69	Tom Clancy's The Division 2	Tom Clancy's The Division 2 - сиквел знаменитого шутера от первого лица от Ubisoft Enterteiment. События второй части развиваются в Вашингтоне, который пал после череды глобальных катастроф. Игрок берет роль спецагента, который призван всеми возможными способами защищать остатки цивилизации, действуя скрытно. Этот город - последняя надежда человечества и нельзя позволить ему погрузиться в хаос.	2019-03-15	1900	gamePages/hJfz6MhQLrWONesHvLyxcg.jpeg	0	8	2	69
+70	Honkai Impact 3rd	События Honkai Impact разворачиваются в мире, страдающем от катаклизмов, порождённых тайной энергией под названием «Хонкай». Эта сила угрожает самому существованию человечества. Чтобы спасти мир от тирании и уничтожения, международная организация «Скикса» занимается подготовкой и развёртыванием женщин-воинов, известных как «валькирии», для борьбы с хонкай и защиты своей веры.	2018-03-28	2200	gamePages/V8DIiEU7AgYi9iMTH3rxDQ.jpeg	0	7	70	70
+71	Divinity: Original Sin 2	Сиквел ролевой игры Divinity: Original Sin, профинансированный через краудфандинговую площадку Kickstarter. Divinity: Original Sin 2 является полноценным сюжетным продолжение оригинальной игры, построенным на движке Divinity Engine и получившим новый интерфейс, художественный стиль и продвинутую ролевую систему. При этом лучшие черты первой Original Sin остались на месте: вы вольны идти, куда захотите, можете убивать, кого заблагорассудится, искать бесчисленные пути для решения поставленных задач и собирать команду сопартийцев мечты. В мире Divinity: Original Sin 2, где боги мертвы, вам выпадает роль персонажа, владеющего запрещенной магией. Находясь под карантином в тюремной колонии Форта «Радость», вы должны отстоять свое право на невероятные силы перед Магистрами, стремящимися «излечить» вас от пугающей их магии. При этом у Ордена Магистров есть свои секреты — жуткие и кровавые, угрожающие всем и каждому. В мире, где боги мертвы, может наступить лишь хаос. Поэтому настало время для появления нового божества.	2017-09-14	2000	gamePages/BhoLMAAHbCVWOLw8C757Yw.jpeg	10	9	71	71
+72	Saints Row 4	Четвертая часть серии Saints Row начала свое существование как скачиваемое дополнение к третьей. Но в процессе разработки THQ заметила «неладное» и решила превратить DLC в полновесное продолжение.Предыстория Saints Row 4 гласит, что глава банды Святых был избран президентом Соединенных Штатов. Вскоре после этого совершенно внезапно начинается инопланетное вторжение, в ходе которого Святые попадают в некую «симуляцию» города Стилпорт. Теперь им предстоит сражаться за освобождение человечества, используя новые суперспособности, а также широкий арсенал инопланетного вооружения. Новая система развития персонажей позволит игрокам создать настоящих монстров, которые будут перепрыгивать здания, обгонять спортивные автомобили и швырять врагов в воздух при помощи телекинеза.	2013-08-19	1400	gamePages/SeB5rZ8ZpzJdmbHo7i26IQ.jpeg	8	9	10	72
+73	Devil May Cry 5	Новая часть популярнейшей серии слэшеров Devil May Cry, события которой разворачиваются годы спустя после Devil May Cry 4. В Devil May Cry 5 нас встречает Неро, потерявший свою руку Devil Bringer и заправляющий собственным бизнесом по борьбе с демонами. В этом ему помогает Нико, новая героини серии, которая конструирует для Неро разные протезы руки. В Devil May Cry 5 будут представлены три играбельных персонажа, среди которых найдется место и седовласому Данте, постаревшему и отпустившему бороду.	2019-08-03	2100	gamePages/FWnSxs_8pkD_atez3JItbg.jpeg	10	8	5	73
+74	Spore	Новое детище гениального Уилла Райта, отца и основателя сериала The Sims. Spore начинает с одноклеточного организма, под бдительным присмотром игрока пожирающего других простейших. Пресытившись, наш недоразвитый подопечный начинает эволюционировать, чтобы через некоторое время вылезти на сушу и столкнуться с другими тварями. Дальше - прогулки по бескрайним просторам, размножение, привычная база с резиновой рамкой и колонизация космоса.	2008-05-09	2700	gamePages/JG0CMmES4_568xU8zXbBiQ.jpeg	7	9	7	74
+75	Mass Effect	Общепризнанная лучшая ролевая игра для Xbox 360, спустя почти год добравшаяся и до персональных компьютеров с ворохом обновлений и усовершенствований на борту - улучшенной графикой, оптимизированным управлением и прочими прелестями.	2007-11-20	1400	gamePages/-mlUKa-_AbPFiswkKrvqQg.jpeg	9	9	7	75
+76	Final Fantasy 7	Первая часть серии Final Fantasy, вышедшая на персональных компьютерах. Переиздание с собственной системой достижений, функцией Character Booster и «облачными» сохранениями вышло в сервисе Steam 4 июля 2013 года.	1998-05-30	2000	gamePages/1qfcejyf7nYhUtCTd-Gh3w.jpeg	0	9	35	76
+77	Predator: Hunting Grounds	Асимметричный мультиплеерный шутер, действие которого разворачивается в отдалённых уголках мира, где Хищник занимается поиском самой сложной добычи. Играйте в качестве бойцов элитной огневой спецгруппы и выполняйте военизированные операции до того, как Хищник найдёт вас. Или играйте за Хищника, чтобы охотиться на самую достойную добычу, используя свои смертоносные инопланетные технологий.	2020-04-24	2300	gamePages/Thn6OWdiKeCOgDiqvkYnmQ.jpeg	0	7	26	77
+78	Shadow of the Tomb Raider	Новая экшен-адвенчура, посвященная приключениям Лары Крофт. Третья часть перезагруженной серии о расхитительнице гробниц. Shadow of the Tomb Raider знаменует собой окончание становления главной героини.	2018-09-14	900	gamePages/8vG0cjxpqsL0bquOx-qU8g.jpeg	8	8	35	78
+79	Mass Effect 2	Вторая часть лучшей, пожалуй, ролевой игры для Xbox 360. При этом сиквел вышел одновременно как на консоли от Microsoft, так и на персональных компьютерах.	2010-01-25	2600	gamePages/5UD7IAoY2xMuNcpnOYIVyg.jpeg	9	10	7	79
+80	Darksiders	Экшен, рассказывающий о приключениях одного из всадников апокалипсиса по кличке «Война». На протяжении n-го количества уровней ему предстоит бегать по миру недалекого будущего, где демоны уничтожили все человечество. «Войне» предстоит разузнать, кто из дьявольского отродья бесстыдно нарушил древнее соглашение и испепелил людскую расу. В этом ему будут помогать как проверенное тысячелетиями оружие и боевые навыки, которые можно легко апгрейдить за душонки, вываливающиеся из поверженных врагов, так и верный конь, позволяющий легко скакать по разрушенному городу и убивать нечисть.	2010-05-01	2900	gamePages/SHTcd7XfyKuRCNnMhZqZtA.jpeg	6	9	25	80
+81	Half-Life 2	Физик Гордон Фримен вновь отложил свои приборы и взял в руки монтировку. Зло, которое он выпустил на свободу в лабораториях Блэк Меса, по-прежнему угрожает миру — и справиться с ним под силу только самому Гордону…Особенности игры: Сюжет игры продолжает историю приключений Гордона Фримена, ученого-исследователя, сражающегося с обитателями иных миров, вторгшимися в мир людей. Искусственный интеллект компьютерных персонажей — и союзников, и противников — выводится на качественно новый уровень. Теперь персонажи способны передвигаться по любой, даже самой сложной местности, оценивать степень исходящей от объектов угрозы и адекватно на нее реагировать, использовать в качестве оружия практически любой из игровых объектов — и многое, многое другое… Шейдерная система генерации изображения, аналогичная той, которую студия Pixar использовала в мультфильмах «История игрушек» и «Корпорация монстров», позволила создать одну из самых красивых на сегодняшний день компьютерных игр. Максимально реалистичная анимация лиц персонажей стала возможна благодаря наличию 40 отдельных лицевых «мускулов» у каждого из них. Героям игры доступны любые, даже самые сложные эмоции, что делает их максимально похожими на реальных людей. Все игровые объекты — от брошенного в воду камня до мчащегося по трассе многотонного грузовика — подчиняются реальным законам физики. Масса, трение, гравитация, плавучесть — вот далеко не все величины, которые учитываются при обработке их поведения.	2004-11-16	2600	gamePages/T4l7p0eVZeOBAFQOy8BIpQ.jpeg	9	9	81	81
+82	Doom (2016)	Четвертая часть культовой серии создана на графическом движке id Tech 6 и, как заявляет лично Джон Кармак (John Carmack), игра выглядит в три раза лучше разрабатываемой на этом же моторе Rage.Новый Doom разительно отличается от предыдущей части, что, учитывая ее неоднозначность, воспринимается как само собой разумеющееся. Такие студии как id просто обязаны делать правильные выводы после в целом не очень положительной реакции аудитории.Игра по-прежнему ориентирована на одиночную кампанию, но мультиплеер претерпел ряд существенных изменений, что позволило ему стать лучше, чем в Doom 3 и Quake 4.	2016-05-13	1400	gamePages/2GigHbb4tLSn3SltqZQMOQ.jpeg	10	9	4	82
+83	BioShock Infinite	События BioShock Infinite откомандируют нас в 1912-й год. Америка в те времена бурно развивалась, росла не по дням, а по часам, и чуть ли не ежемесячно совершала какое-нибудь грандиозное открытие. Великая держава, не иначе. Все эти факторы, естественно, сказались на мировоззрении многих людей. Чувство патриотизма начало очень сильно отдавать в голову, а посему, дабы показать миру свое могущество, американские стахановцы решили построить на рубеже XX-го века настоящий летающий город под названием Колумбия. Мечты инженеров и отцов-создателей быстро воплотились в жизнь – город, поддерживаемый кучей воздушных шаров и других достижений паропанка, был построен в срок. Все бы хорошо да только в один прекрасный момент «что-то» пошло не так, Колубмия была вовлечена в какую-то катастрофу и в итоге затерялась где-то в облаках. Никто не знает, что с ней случилось после всей заварушки. У главного героя в BioShock Infinite на удивление есть и имя, и даже стойкий нордический характер. Нам доверят роль сыщика и профессионального пинкертона по имени Букер ДеВитт (Booker DeWitt). С ним связывается какой-то загадочный человечек, который знает месторасположение Колумбии, и просит его за хорошие деньги слетать туда и вызволить девушку по имени Элизабет, которая с самого детства находится под стражей в Колумбии и обладает какими-то диковинными силами. Как оказалось, вызволить девчушку не очень сложно. Куда как труднее выбраться из парящей в небе утопии – освобождение Элизабет ознаменовывает начало настоящей «гражданской» войны в Колумбии. И именно на пару с Элизабет нам предстоит выбираться из этого маленького американского ада, который начинает разрушаться и постепенно терять высоту. Несколько часов и он разобьется о землю. На кооператив не рассчитывайте. Элизабет будет под контролем искусственного интеллекта, и никто не даст второму игроку порулить ей. Делается это сугубо ради сюжетной составляющей. По ходу BioShock Infinite между двумя героями будут выстраиваться свои отношения. Не любовный роман, конечно, но эта парочка будет заботиться друг о друге. Компьютерный болванчик, контролирующий Элизабет, обещает быть очень умным и всесторонне развитым. Однако не думайте, что молодая девушка всесильна – у нее есть свой предел прочности, так что не стоит слишком часто полагаться на ее силушку.	2013-03-26	2800	gamePages/7Da7czAcTMIYKWc9_-9vFA.jpeg	10	9	29	83
+84	Dishonored	Dishonored — это насыщенный экшен от первого лица, в котором вам предстоит вжиться в роль убийцы, чьими поступками движет жажда мести. Гибкая система боя в Dishonored позволит вам комбинировать ваши сверхъестественные способности, оружие и необычные устройства так, как того захотите вы, чтобы устранить ваши цели. Преследуйте врагов под покровом тьмы или обнажите клинок и сразитесь с противником лицом к лицу. Результаты каждой миссии зависят от того, какой путь вы выберите.Место действия Dishonored — промышленный город Дануолл, где во мраке теней тесно переплелись паровые механизмы и загадочные потусторонние силы. Вы были одним из лучших телохранителей всеми почитаемой Императрицы. Но когда ее убили, вы стали главным подозреваемым и превратились в глазах общественности в бесчестного убийцу, которого знают только по маске, ставшей вашей визитной карточкой. И теперь, в это смутное время, когда город поразила вспышка чумы, а к власти пришло продажное правительство, вооруженное промышленными технологиями, темные силы предлагают вам дар, который сделает вас могущественнее любого человека. Но какую цену придется за это заплатить? Истина, которая скрывается за вашим предательством, так же мрачна, как и воды, омывающие этот город. С этого момента ваша жизнь никогда не будет прежней.Главные особенности Dishonored представлены возможностью импровизировать и находить оригинальные пути решения задачи, сверхъестественными способностями, которыми владеет не только главный герой, но и некоторые противники, и уникальным во всех смыслах этого слова городом.	2012-08-10	2400	gamePages/6qT4unrN_TVvuh6MgzJKGA.jpeg	9	9	4	84
+85	Mass Effect 3	Заключительная часть трилогии Mass Effect. Сюжетные колодки Mass Effect 3 расположились буквально в двух шагах от финала «Прибытия» (The Arrival) – контент-пака для Mass Effect 2. В свете событий, произошедших во время этого самого «Прибытия», командир Шепард был отдан под суд и отправлен прямиком на Землю. Однако во время первого слушания на родину человечества нападают пресловутые «Пожинатели» (Reapers) и начинают резво истреблять людскую расу. Шепард времени зря не теряет, берет в руки оружие и отправляется уничтожать неверных, которые встречаются на его пути к сияющей «Нормандии» и будущему спасению Земли. Теперь задача Шепарда – найти союзников среди рас, готовых дать отпор «Пожинателям», и спасти человечество от неминуемой гибели. Прямо скажем, задачка не из простых, так как не все хотят встревать в дела «Пожинателей». Ведь есть шанс, что после Земли они отправятся уничтожать планеты отважных «союзников». В игре имеется несколько концовок. Как плохих, так и хороших – финал во многом будет зависеть от того, с кем Шепард заключит союз, а с кем продолжит негласно воевать. «Судьбоносные решения», принятые вами в предыдущих играх, также повлияют на вселенную ME3. Скажем, убитые напарники вроде Гарруса навсегда исчезнут из мира игры. Если же сохранений из ME и ME2 у вас нет и импортировать в ME3, стало быть, нечего, то вам позволят в начале игры определиться с тем, как развивались события в предыдущих играх, - оформлены все решения будут в виде комикса, как в PS3-версии Mass Effect 2.	2012-05-03	1300	gamePages/JbA4_xikCkHaC68I9K0hUA.png	8	9	7	85
+86	Terraria	Замечательная смесь аркады и стратегии в стиле Minecraft. Исследование мира, поиск драгоценностей и прочего добра под землей, строительство собственного замка, сражение с врагами - развлечений здесь более чем достаточно. Режим "песочницы" со случайно генерируемым миром прилагается.	2011-05-15	1300	gamePages/IufwMNNL86LiJw-XfLd88g.jpeg	0	9	86	86
+87	Star Wars: Empire at War	RTS во вселенной Star Wars.Действие игры разворачивается два года спустя событий в A New Hope и также будет перекликаться с Эпизодом 3. Разнообразные ландшафты (пустыня, зелёная степь и пр.) с ходящими AT-AT и имперским наземным транспортом TIE Crawlers (некий гибрид танка и TIE Fighter’а) производят невероятное впечатление. Кроме планет действие может перенестись в космос, где флот повстанцев ведёт неравный бой с Star Destroyer’ами. Выглядит это всё, по мнению журналистов, не хуже Homeworld. Дополнения:Star Wars: Empire at War - Forces of Corruption, 24.10.2006. Главная особенность аддона – преступники, которым и посвящена одиночная кампания. Из остальных нововведений – стандартная пачка обновлений в игровом процессе, новые юниты, герои и здания.	2006-02-16	1100	gamePages/kcEt_RyxQ0_v0N9WguwINw.jpeg	6	9	65	87
+88	Star Wars: Knights of the Old Republic 2 - The Sith Lords	Продолжение лучшей RPG 2003-го года, в котором игроки могут найти улучшенный движок, один дополнительный класс джедаев, новые возможности силы и полностью нелинейный сюжет. Мультиплеера, к сожалению, мы снова не дождались.	2004-06-12	2500	gamePages/vrTK0o31dzUJamdR2BLeTg.jpeg	8	9	65	88
+89	Vampire: The Masquerade - Bloodlines 2	Продолжение культовой вампирской экшен-RPG Vampire: The Masquerade - Bloodlines. Познакомьтесь с тёмной стороной Сиэтла и постарайтесь выжить в городе, полном неоднозначных персонажей, следящих за каждым вашим решением.	\N	2400	gamePages/y4v8cJnlgPKOCKvqt4fCjQ.jpeg	0	8	89	89
+90	GreedFall	Новая ролевая игра от разработчиков The Technomancer и Bound by Flame. События GreedFall разворачиваются в XVII веке — эре Барокко, которая послужила вдохновением для дизайна и сеттинга игры. В этот период совершались важные открытия, и в игре будет представлено множество фракций, отдающих предпочтение науке, алхимии, взрывчатым веществам, а также религии. При этом игра не является исторически достоверной, поскольку содержит элементы магии и сверхъестественного. В качестве представителя торговой нации вы отправитесь к берегам Нового Света, населенного неизвестной доселе цивилизацией, где постараетесь отыскать лекарство от болезни, угрожающей родной земле.	2019-10-09	1900	gamePages/DRjxu6PN2U8-z0RAfrHpZQ.jpeg	0	8	90	90
+\.
+
+
+--
+-- Data for Name: GAME_genre; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."GAME_genre" (id, game_id, genre_id) FROM stdin;
+1	1	1
+2	1	2
+3	1	3
+4	1	4
+5	1	5
+6	2	1
+7	2	7
+8	2	2
+9	2	3
+10	2	5
+11	3	1
+12	3	7
+13	3	3
+14	3	5
+15	3	15
+16	4	1
+17	4	2
+18	4	18
+19	4	3
+20	4	4
+21	4	5
+22	4	22
+23	5	1
+24	5	7
+25	5	3
+26	5	26
+27	6	1
+28	6	28
+29	6	29
+30	6	18
+31	6	3
+32	6	5
+33	6	33
+34	7	34
+35	7	35
+36	8	1
+37	8	7
+38	8	2
+39	8	5
+40	9	1
+41	9	29
+42	9	42
+43	9	5
+44	9	44
+45	10	1
+46	10	29
+47	10	42
+48	10	48
+49	10	18
+50	10	44
+51	11	7
+52	12	1
+53	12	2
+54	12	3
+55	13	1
+56	13	3
+57	13	57
+58	14	1
+59	14	2
+60	14	18
+61	14	5
+62	14	62
+63	15	1
+64	15	2
+65	15	18
+66	15	3
+67	15	5
+68	15	44
+69	16	1
+70	16	7
+71	16	2
+72	16	3
+73	16	4
+74	16	5
+75	17	29
+76	17	18
+77	17	57
+78	18	78
+79	18	22
+80	19	1
+81	19	81
+82	19	3
+83	20	1
+84	20	7
+85	20	2
+86	20	86
+87	20	87
+88	20	57
+89	21	1
+90	21	2
+91	21	29
+92	21	86
+93	21	87
+94	21	57
+95	22	95
+96	22	96
+97	22	33
+98	23	7
+99	23	2
+100	23	100
+101	23	101
+102	24	1
+103	24	29
+104	24	35
+105	24	18
+106	24	3
+107	24	5
+108	24	33
+109	25	1
+110	25	2
+111	25	42
+112	25	81
+113	25	18
+114	25	5
+115	25	44
+116	26	7
+117	26	57
+118	27	1
+119	27	2
+120	27	42
+121	27	81
+122	27	18
+123	27	5
+124	27	44
+125	28	1
+126	28	34
+127	29	1
+128	29	3
+129	29	5
+130	30	1
+131	30	29
+132	31	78
+133	31	34
+134	31	35
+135	32	1
+136	32	29
+137	32	18
+138	32	57
+139	33	2
+140	33	3
+141	33	5
+142	33	44
+143	34	1
+144	34	28
+145	34	3
+146	34	5
+147	34	33
+148	35	1
+149	35	2
+150	35	26
+151	35	5
+152	35	44
+153	36	153
+154	36	78
+155	36	34
+156	37	1
+157	37	2
+158	37	3
+159	37	4
+160	38	1
+161	38	7
+162	38	2
+163	38	48
+164	38	3
+165	38	5
+166	39	1
+167	39	28
+168	39	18
+169	39	26
+170	39	170
+171	40	1
+172	40	7
+173	40	2
+174	40	3
+175	41	7
+176	41	81
+177	41	3
+178	41	5
+179	42	2
+180	42	4
+181	43	78
+182	43	182
+183	44	1
+184	44	7
+185	44	81
+186	44	3
+187	45	1
+188	45	2
+189	45	4
+190	46	1
+191	46	29
+192	46	18
+193	46	86
+194	46	57
+195	46	170
+196	47	2
+197	47	28
+198	47	29
+199	47	18
+200	47	57
+201	47	170
+202	48	1
+203	48	2
+204	48	28
+205	48	3
+206	48	4
+207	48	5
+208	48	170
+209	49	1
+210	49	29
+211	49	18
+212	49	5
+213	49	33
+214	50	1
+215	50	2
+216	50	18
+217	50	5
+218	50	218
+219	51	1
+220	51	3
+221	51	5
+222	51	33
+223	52	2
+224	52	28
+225	52	225
+226	52	18
+227	52	5
+228	53	1
+229	53	2
+230	53	230
+231	53	3
+232	53	4
+233	54	2
+234	55	1
+235	55	18
+236	55	22
+237	56	1
+238	56	7
+239	56	29
+240	56	18
+241	56	5
+242	56	170
+243	57	2
+244	57	44
+245	58	1
+246	58	2
+247	58	4
+248	58	5
+249	59	1
+250	59	250
+251	60	1
+252	60	29
+253	60	48
+254	60	18
+255	60	44
+256	60	57
+257	61	1
+258	61	2
+259	61	42
+260	61	81
+261	61	18
+262	61	5
+263	61	44
+264	62	1
+265	62	101
+266	63	1
+267	63	29
+268	63	18
+269	64	1
+270	64	28
+271	64	18
+272	64	5
+273	64	33
+274	64	170
+275	65	1
+276	65	2
+277	66	1
+278	66	42
+279	66	81
+280	66	57
+281	67	1
+282	67	2
+283	67	101
+284	68	1
+285	68	28
+286	68	29
+287	68	42
+288	68	225
+289	68	18
+290	69	1
+291	69	2
+292	69	29
+293	69	225
+294	70	1
+295	70	2
+296	70	296
+297	71	7
+298	71	2
+299	71	299
+300	71	101
+301	71	4
+302	71	170
+303	72	1
+304	72	28
+305	72	3
+306	72	5
+307	72	33
+308	72	170
+309	73	1
+310	73	310
+311	73	3
+312	74	1
+313	74	2
+314	74	95
+315	74	86
+316	74	57
+317	75	1
+318	75	2
+319	75	29
+320	75	3
+321	75	57
+322	76	2
+323	76	3
+324	76	4
+325	77	28
+326	77	29
+327	78	1
+328	78	7
+329	78	3
+330	79	1
+331	79	2
+332	79	3
+333	79	86
+334	79	57
+335	80	1
+336	80	310
+337	80	3
+338	80	4
+339	81	1
+340	81	29
+341	81	18
+342	81	57
+343	82	1
+344	82	28
+345	82	29
+346	82	18
+347	83	1
+348	83	29
+349	83	18
+350	83	350
+351	84	1
+352	84	48
+353	84	18
+354	84	350
+355	85	1
+356	85	2
+357	85	29
+358	85	3
+359	85	57
+360	86	153
+361	86	95
+362	86	362
+363	86	5
+364	87	95
+365	87	365
+366	87	86
+367	87	57
+368	88	2
+369	89	1
+370	89	81
+371	89	3
+372	90	1
+373	90	2
+374	90	3
+375	90	4
+376	90	5
+\.
+
+
+--
+-- Data for Name: GENRE; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."GENRE" (id, name) FROM stdin;
+1	Экшен
+2	Ролевая
+3	От третьего лица
+4	Фэнтези
+5	Открытый мир
+7	Адвенчура
+15	Вестерн
+18	От первого лица
+22	Виртуальная реальность
+26	Зомби
+28	Мультиплеер
+29	Шутер
+33	Песочница
+34	Гонки
+35	Автомобили
+42	Выживание
+44	Постапокалипсис
+48	Стелс
+57	Научная фантастика
+62	Киберпанк
+78	Симулятор
+81	Ужасы
+86	Космос
+87	Юмор
+95	Стратегия
+96	Строительство
+100	Инди
+101	Вид сверху
+153	Аркада
+170	Кооператив
+182	Авиация
+218	Средневековье
+225	MMO
+230	Тактика
+250	Файтинг
+296	Условно-бесплатная
+299	Пошаговая
+310	Слэшер
+350	Стимпанк
+362	Платформер
+365	RTS
+\.
+
+
+--
+-- Data for Name: PUBLISHER; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."PUBLISHER" (id, name, summary, foundation_date) FROM stdin;
+1	Bandai Namco Entertainment	\N	\N
+2	Ubisoft Entertainment	\N	\N
+3	Take-Two Interactive	\N	\N
+4	Bethesda Softworks	\N	\N
+5	Capcom	\N	\N
+6	Rockstar Games	\N	\N
+7	Electronic Arts	\N	\N
+8	Black Sun Game Publishing	\N	\N
+9	GSC World Publishing	\N	\N
+10	Deep Silver	\N	\N
+11	Daedalic Entertainment	\N	\N
+12	L2 Game Studio	\N	\N
+14	CD Projekt RED	\N	\N
+16	Atari	\N	\N
+17	Reef Entertainment	\N	\N
+18	SCS Software	\N	\N
+20	Studio FOW Interactive	\N	\N
+21	Private Division	\N	\N
+23	Humble Bundle	\N	\N
+25	THQ	\N	\N
+26	Sony Interactive Entertainment	\N	\N
+27	bitComposer Entertainment	\N	\N
+29	2K Games	\N	\N
+31	Xbox Game Studios	\N	\N
+32	Black Mesa Team	\N	\N
+35	Square Enix	\N	\N
+39	Warner Bros. Interactive Entertainment	\N	\N
+40	Activision	\N	\N
+46	Piranha Games	\N	\N
+54	Xicat Interactive	\N	\N
+55	Valve Software	\N	\N
+57	AtomTeam	\N	\N
+62	THQ Nordic	\N	\N
+65	LucasArts Entertainment	\N	\N
+67	Blizzard Entertainment	\N	\N
+68	Battlestate Games	\N	\N
+70	Mihoyo	\N	\N
+71	Larian Studios	\N	\N
+81	Sierra Entertainment	\N	\N
+86	Re-Logic	\N	\N
+89	Paradox Interactive	\N	\N
+90	Focus Home Interactive	\N	\N
+\.
+
+
+--
+-- Data for Name: SYSREQ; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public."SYSREQ" (id, "HDD", "CPU", "GPU", "DDR", configuration_name) FROM stdin;
+1	40 ГБ	Intel Core i5-2500K с тактовой частотой 3,3 ГГц / AMD Phenom II X4 940	NVIDIA GeForce GTX 660 / AMD Radeon HD 7870	6	The Witcher 3: Wild Hunt
+2	Неизвестно	Неизвестно	Неизвестно	0	Assassin's Creed 2020
+3	150 ГБ	Intel Core i5-2500K или AMD FX-6300	NVIDIA GTX 770 (2 ГБ) или AMD Radeon R9 280 (3 ГБ)	8	Red Dead Redemption 2
+4	6 ГБ	двухъядерный с тактовой частотой 2 ГГц	c 512 МБ видеопамяти и поддержкой DirectX 9.0c	2	The Elder Scrolls 5: Skyrim
+5	Неизвестно	Intel Core i5-4460 / AMD FX-6300	NVIDIA GeForce GTX 760 / AMD Radeon R7 260x	8	Resident Evil 3: Nemesis
+6	83 ГБ	Intel Core 2 Q6600 2,4 ГГц  / AMD Phenom 9850 2,5 ГГц	NVIDIA 9800 GT 1 ГБ / AMD HD 4870 1 ГБ	4	Grand Theft Auto 5
+7	50 ГБ	Intel Core i5-3570 / AMD FX-6350	GeForce GTX 760 / Radeon 7970 | R9 280x	8	Need for Speed: Heat
+8	Неизвестно	Неизвестно	Неизвестно	0	Корсары: Черная метка
+9	Неизвестно	Неизвестно	Неизвестно	0	S.T.A.L.K.E.R. 2
+10	59 ГБ	Intel Core i5-4440	GeForce GTX 670 / GeForce GTX 1050 / AMD Radeon HD 7870	8	Metro Exodus
+11	Неизвестно	Неизвестно	Неизвестно	0	The Lord of the Rings - Gollum
+12	6 ГБ	Intel Core i5-3210M	с 4 ГБ видеопамяти	4	Beauty And Violence: Valkyries
+13	55 ГБ	FX-6100 / i3-3220	Radeon HD 7750 / GeForce GTX 650	8	Star Wars Jedi: Fallen Order
+14	Неизвестно	Неизвестно	Неизвестно	0	Cyberpunk 2077
+15	30 ГБ	Intel Core i5-2300 с тактовой частотой 2,8 ГГц / AMD Phenom II X4 945 с тактовой частотой 3 ГГц	NVIDIA GTX 550 Ti / AMD Radeon HD 7870 с 2 ГБ видеопамяти	8	Fallout 4
+16	15 ГБ	Intel Pentium 4 с тактовой частотой 2.4 ГГц / AMD Athlon 64 +2800 или AMD Athlon XP series (AMD Athlon XP +2400 не поддерживается)	NVIDIA GeForce 6600 / AMD Radeon 9800	1	The Witcher
+17	32 ГБ	ntel Core i3 4160 @ 3.6 ГГц / AMD FX 8350 @ 4.0 ГГц	Nvidia GTX 1050 / AMD RX 560	8	Terminator: Resistance
+18	3 ГБ свободного места	Двухъядерный 2.4 ГГц	GeForce GTS 450-class (Intel HD 4000)	4	Euro Truck Simulator 2
+19	Неизвестно	Intel Core i5-4460 с тактовой частотой 2,7 ГГц / AMD FX-6300	NVIDIA GeForce GTX 760 / AMD Radeon R7 260x с 2 Гб видеопамяти	8	Resident Evil 2
+20	20 ГБ	Intel Core i3-2100 / AMD FX-6300	NVIDIA GeForce GTX 760 / AMD Radeon HD 7950	4	Subverse
+21	40 ГБ	Intel Core i3-3225 / AMD Phenom II X6 1100T	Nvidia GTX 650 Ti / AMD HD 7850	4	The Outer Worlds
+22	10 ГБ	Intel Core 2 Duo 1,8 ГГц или AMD Athlon 64 Dual-Core 4000+	NVIDIA GeForce 6600 или ATI Radeon X1300	2	The Sims 4
+23	22 ГБ	Intel Core i3	NVIDIA Geforce GT520M	4	Disco Elysium
+24	Неизвестно	Неизвестно	Неизвестно	0	Grand Theft Auto 6
+25	8 ГБ	Intel Pentium IV 2 ГГц / AMD Athlon XP 2200+	NVIDIA GeForce 5700 / AMD Radeon 9600 со 128 МБ видеопамяти	1	S.T.A.L.K.E.R.: Shadow of Chernobyl
+26	Неизвестно	Intel Core i7-3770 @ 3.4 Ггц или AMD FX-8350 @ 4.2 Ггц	Nvidia GeForce GTX 780 или AMD Radeon HD 7950 с 3 ГБ видеопамяти	8	Detroit: Become Human
+27	5 ГБ	Intel Pentium 4 2 ГГц / AMD XP 2200+	NVIDIA GeForce 5700 / ATI Radeon 9600 со 128 MБ видеопамяти	1	S.T.A.L.K.E.R.: Call of Pripyat
+28	Неизвестно	Неизвестно	Неизвестно	0	Fast & Furious Crossroads
+29	8 ГБ	Pentium D 3G,0 ГГц / AMD Athlon 64 X2 3600+	Nvidia GeForce 8600 / ATI HD2600 Pro;	0	Mafia 2
+30	Неизвестно	Неизвестно	Неизвестно	0	Doom Eternal
+31	Неизвестно	Intel i3-4170 3,7 ГГц / Intel i5-750 2,67 ГГц	NVidia 650TI / NVidia GT 740 / AMD R7 250x	8	Forza Horizon 4
+32	15 GB	2.4 Dual Core Processor or Greater	1 GB Dedicated Video Card or Greater	4	Black Mesa
+33	10 ГБ	Intel Core 2 Duo с тактовой частотой 2,0 ГГц	NVIDIA GeForce 6 Series / AMD Radeon 1300XT Series	2	Fallout: New Vegas
+34	15 Гб	Intel Core 2 Duo с тактовой частотой 1.8 ГГц / AMD Athlon X2 64 с тактовой частотой 2.4 ГГц	NVIDIA GeForce 7900 / AMD Radeon X1900 с 256 Мб видеопамяти	1	Grand Theft Auto 4
+35	Неизвестно	Неизвестно	Неизвестно	0	Dying Light 2
+36	3 Гб	Intel Pentium 4 с тактовой частотой 1,4 ГГц	NVIDIA GeForce 2 / AMD Radeon 7500 с 32 Мб видеопамяти	1	Need for Speed: Most Wanted (2005)
+37	25 Гб	Intel Core 2 Duo с тактовой частотой 2.2 ГГц	NVIDIA GeForce 8800 GT / AMD Radeon HD 3850 с 512 Мб видеопамяти	0	The Witcher 2: Assassins of Kings
+38	46 ГБ	Intel Core i5 2400 3,1 ГГц / AMD FX 6300 3,8 ГГц	NVIDIA GeForce GTX 660 / AMD Radeon R9 270 с 2 ГБ видеопамяти	8	Assassin's Creed: Odyssey
+39	40 ГБ	Intel Core i5-2500 3,3 ГГц / AMD FX-8320 3,5 ГГц	NVIDIA GeForce GTX 560 / AMD Radeon HD 6870 с 1 ГБ видеопамяти	4	Dying Light
+40	25 ГБ	Intel Core i3-2100 / AMD FX-6300	NVIDIA GeForce GTX 760 / AMD Radeon HD 7950	4	Sekiro: Shadows Die Twice
+41	Неизвестно	Неизвестно	Неизвестно	0	Death Stranding
+42	26 ГБ	четырёхядерный AMD с частотой 2,5 ГГц или четырёхъядерный Intel 2,0 ГГц	AMD Radeon HD 4870, NVIDIA GeForce 8800 GT	4	Dragon Age: Inquisition
+43	Неизвестно	Неизвестно	Неизвестно	0	Microsoft Flight Simulator
+44	15 ГБ	Intel Core 2 Duo с тактовой частотой 2,4 ГГц / AMD Athlon X2 с тактовой частотой 2,8 ГГц	NVIDIA GeForce 8800GTS / AMD Radeon HD 4850	2	Resident Evil 4
+45	Неизвестно	Неизвестно	Неизвестно	0	Elden Ring
+46	55 ГБ	Intel Core i3-7100 / AMD Ryzen 3 1200	NVIDIA GeForce GTX 770 / AMD Radeon R9 280X	8	MechWarrior 5: Mercenaries
+47	75 ГБ	AMD FX-8350 / Intel i5-3570	AMD Radeon HD 7970 / NVIDIA GeForce GTX 680 с 2 ГБ видеопамяти	6	Borderlands 3
+48	25 ГБ	Intel Core i5-4460 3,4 ГГц	Nvidia GeForce GTX 760	8	Monster Hunter: World
+49	15 ГБ	Intel Core 2 Duo E6700 2,66 ГГц / AMD Athlon 64 X2 6000+ 3 ГГц	с 512 МБ видеопамяти и поддержкой Shader Model 3.0	2	Far Cry 3
+50	40 ГБ	Intel Core i3-6100 3,7 ГГц или аналогичный	GeForce GTX 660 / Radeon HD 7850	8	Kingdom Come: Deliverance
+51	4.7 Гб	Intel Pentium III / AMD Athlon с тактовой частотой 1 ГГц	NVIDIA GeForce 3 с 64 Мб видеопамяти	1	Grand Theft Auto: San Andreas
+52	85 ГБ	Intel Core i3-540 / AMD A6-3620	NVIDIA GeForce 460 / AMD Radeon 6850 с 1 ГБ видеопамяти	3	The Elder Scrolls Online
+53	20 ГБ	Intel Core 2 с тактовой частотой 1.4 ГГц / AMD X2 с тактовой частотой 1.8 ГГц	ATI Radeon X850 / NVIDIA GeForce 6600 GT с 128 МБ видеопамяти	1	Dragon Age: Origins
+54	4 ГБ	Intel Pentium III с тактовой частотой 700 МГц	с 32 МБ видеопамяти	1	Gothic
+55	Неизвестно	Intel Core i5-7500 / Ryzen 5-1600	GTX 1060 / RX 580 с 6 ГБ видеопамяти	12	Half-Life: Alyx
+56	Неизвестно	Intel Core i5-2400 3,1 ГГц / AMD FX-6300 3,5 ГГц	NVIDIA GeForce GTX 670 / AMD R9 270 с 2 ГБ видеопамяти и поддержкой Shader Model 5.0	8	Far Cry 5
+57	8 ГБ	Intel Core 2 Duo / Athlon 64 X2	NVIDIA GeForce GTX 260 / Radeon HD 4850	2	ATOM RPG
+58	Неизвестно	Неизвестно	Неизвестно	0	The Elder Scrolls 6
+59	60 ГБ	Intel Core i5-750, 2.66 ГГц / AMD Phenom II X4 965, 3.4 ГГц или AMD Ryzen 3 1200, 3.1 ГГц	NVIDIA GeForce GTX 670 или NVIDIA GeForce GTX 1050 / AMD Radeon HD 7950 или AMD Radeon R9 270	8	Mortal Kombat 11
+60	12 ГБ	двухъядерный процессор (Core 2 Duo или лучше)	NVIDIA GeForce 8800 / NVIDIA GeForce GT220 или что-нибудь получше	1	Metro 2033
+61	10 ГБ	Intel Pentium 4 2 ГГц / AMD Athlon XP 2200+	NVIDIA GeForce 5700 / AMD Radeon 9600 со 128 МБ видеопамяти	1	S.T.A.L.K.E.R.: Clear Sky
+62	15 ГБ	AMD FX-8320 (3,5 ГГц) / Intel i5-4690K (3,5 ГГц)	NVIDIA GeForce GTX 960	4	Darksiders: Genesis
+63	175 ГБ	Intel Core i3-4340 или AMD FX-6300	NVIDIA GeForce GTX 670 (или GTX 1650) или AMD Radeon HD 7950	8	Call of Duty: Modern Warfare (2019)
+64	30 ГБ	Intel Core i5-750 2,6 ГГц / AMD Phenom II X4 955  3,2 ГГц	NVIDIA GeForce GTX 460 / AMD Radeon HD5850 с 1 ГБ	4	Far Cry 4
+65	3,5 ГБ свободного места	Intel Pentium 3 или AMD Athlon с тактовой частотой 1 ГГц	с 32 МБ видеопамяти и аппаратным ускорителем трехмерной графики	1	Star Wars: Knights of the Old Republic
+66	Неизвестно	Pentium с тактовой частотой 200 МГц	с 4 МБ видеопамяти	1	Dino Crisis
+67	Неизвестно	Неизвестно	Неизвестно	0	Diablo 4
+68	от 8 ГБ	двухъядерный с тактовой частотой 2.4 GHz (Intel Core 2 Duo, i3), 2.6 GHz (AMD Athlon, Phenom II)	DX11-совместимая видеокарта с 1 ГБ видеопамяти	6	Escape from Tarkov
+69	Неизвестно	Intel Core I5-2500K или AMD FX-6350	NVIDIA GeForce GTX 660 / AMD Radeon R9 270 с 2 ГБ видеопамяти	8	Tom Clancy's The Division 2
+70	10 ГБ	Intel Core Duo CPU E4600 @ 2.40 ГГц / Pentium Dual-Core CPU E2210 @ 2.20 ГГц	с 1 ГБ видеопамяти	4	Honkai Impact 3rd
+71	25 ГБ	Intel Core i5 или эквивалент	NVIDIA GeForce GTX 550 / ATI Radeon HD 6XXX или лучше	4	Divinity: Original Sin 2
+72	10 ГБ	Intel Core 2 Quad Q6600 | AMD Ahtlon II x3	NVIDIA GTX 260 | AMD Radeon HD 5800 серии	4	Saints Row 4
+73	35 ГБ	Intel® Core i5-4460 / AMD FX-6300	NVIDIA GeForce GTX 760 / AMD Radeon R7 260x с 2 ГБ видеопамяти	8	Devil May Cry 5
+74	6 ГБ	Intel Pentium 4 с тактовой частотой 2.0 ГГц	NVIDIA GeForce FX 5900 / ATI Radeon 9600 с 128 МБ видеопамяти	1	Spore
+75	12 Гб	Pentium 4/Athlon XP 2 ГГц	GeForce 6XXX/ATI 1300XT	1	Mass Effect
+76	3 ГБ	с тактовой частотой 2.0 ГГц	совместимая с DirectX 9.0	1	Final Fantasy 7
+77	Неизвестно	Неизвестно	Неизвестно	0	Predator: Hunting Grounds
+78	40 ГБ	Intel Core i3-3220 или эквивалентный AMD	NVIDIA GeForce GTX 660 / AMD Radeon HD 7770	8	Shadow of the Tomb Raider
+79	15 Гб	Intel Core 2 Duo 1.8 ГГц или аналогичный по производительности AMD Athlon	уровня NVIDIA GeForce 6800 или ATI Radeon X1600	0	Mass Effect 2
+80	12 Гб	AMD Athlon 64 3800+ с тактовой частотой 2.4 ГГц / Intel Pentium 4 530 с тактовой частотой 3 ГГц	NVIDIA GeForce 8800 / AMDRadeon X1900 с 256 Mб памяти и обязательной поддержкой Pixel Shader 3	1	Darksiders
+81	5 ГБ	Intel Pentium 3 1.2 ГГц / AMD Athlon XP 1500+	GeForce 2 MX с 64 МБ памяти	1	Half-Life 2
+82	55 ГБ	Intel Core i5-2400 / AMD FX-8320	NVIDIA GTX 670 2ГБ / AMD Radeon HD 7870 2 ГБ	8	Doom (2016)
+83	20 ГБ	Intel Core 2 DUO 2.4 ГГц или AMD Athlon X2 2.7 ГГц	ATI Radeon HD 3870 / NVIDIA 8800 GT / Intel HD 3000 с 512 МБ видеопамяти	2	BioShock Infinite
+84	9 Гб	2-хъядерный с тактовой частотой 3 ГГц	NVIDIA GeForce GTX 460 / AMD Radeon HD 5850 с 512 Мб видеопамяти	4	Dishonored
+85	15 гигабайт свободного места на жестком диске;	Intel Core 2 Duo с частотой 1.8 GHz / что-то похожее от AMD;	с 256 MB памяти на борту и поддержкой Pixel Shader 3.0;	0	Mass Effect 3
+86	200 МБ	с тактовой частотой 1,6 ГГц	с 128 МБ видеопамяти и поддержкой Shader Model 1.1	1	Terraria
+87	2.5 ГБ	Intel Pentium III @ 1.0 ГГц / AMD Athlon 1000+	ATI Radeon 7200 / Nvidia GeForce 256 с 32 МБ видеопамяти	1	Star Wars: Empire at War
+88	5 ГБ свободного места	Intel Pentium 3 или AMD Athlon с тактовой частотой 1 ГГц	с 32 МБ видеопамяти и аппаратным ускорителем трехмерной графики	1	Star Wars: Knights of the Old Republic 2 - The Sith Lords
+89	Неизвестно	Неизвестно	Неизвестно	0	Vampire: The Masquerade - Bloodlines 2
+90	25 ГБ	Intel Core i5-3450 (3.1 ГГц) / AMD FX-6300 X6 (3.5 ГГц)	GeForce GTX 660 / Radeon HD 7870 с 2 ГБ видеопамяти	8	GreedFall
+\.
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+1	Regular users
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add genre	7	add_genre
+26	Can change genre	7	change_genre
+27	Can delete genre	7	delete_genre
+28	Can view genre	7	view_genre
+29	Can add publisher	8	add_publisher
+30	Can change publisher	8	change_publisher
+31	Can delete publisher	8	delete_publisher
+32	Can view publisher	8	view_publisher
+33	Can add sys req	9	add_sysreq
+34	Can change sys req	9	change_sysreq
+35	Can delete sys req	9	delete_sysreq
+36	Can view sys req	9	view_sysreq
+37	Can add Игра	10	add_game
+38	Can change Игра	10	change_game
+39	Can delete Игра	10	delete_game
+40	Can view Игра	10	view_game
+41	Can add user profile	11	add_userprofile
+42	Can change user profile	11	change_userprofile
+43	Can delete user profile	11	delete_userprofile
+44	Can view user profile	11	view_userprofile
+45	Can add Уведомление об успешном платеже	12	add_successnotification
+46	Can change Уведомление об успешном платеже	12	change_successnotification
+47	Can delete Уведомление об успешном платеже	12	delete_successnotification
+48	Can view Уведомление об успешном платеже	12	view_successnotification
+49	Can add order item	13	add_orderitem
+50	Can change order item	13	change_orderitem
+51	Can delete order item	13	delete_orderitem
+52	Can view order item	13	view_orderitem
+53	Can add Заказ	14	add_order
+54	Can change Заказ	14	change_order
+55	Can delete Заказ	14	delete_order
+56	Can view Заказ	14	view_order
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+48	pbkdf2_sha256$150000$Z8EoG8efV7Dq$rDQyuVmc4tJhJeSULuWAhSv2iShh+DAifeUWmowgk2k=	2020-01-20 20:25:57.720204+03	t	paltusuction				t	t	2020-01-20 18:01:55.562738+03
+47	pbkdf2_sha256$150000$GbjGtRStY6tF$3yZ//lmw0BEbaWE95XYmT1Ubcwk+182xqwSpEUIhR+0=	\N	f	Admin	Пользователь	Admin		t	t	2020-01-20 17:54:59.611924+03
+46	pbkdf2_sha256$150000$HRRg7eDvMn2S$Ph/piiEVFL0tkrJ4NdLOGEsi3Ebhf3Gw5ycfqDaXhjI=	2020-01-20 22:17:37.067306+03	f	User	Пользователь	User		f	t	2020-01-20 17:54:21.067414+03
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	the_boythesda	genre
+8	the_boythesda	publisher
+9	the_boythesda	sysreq
+10	the_boythesda	game
+11	userstuff	userprofile
+12	robokassa	successnotification
+13	orders	orderitem
+14	orders	order
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2019-10-04 00:20:33.7143+03
+2	auth	0001_initial	2019-10-04 00:20:34.154249+03
+3	admin	0001_initial	2019-10-04 00:20:34.796239+03
+4	admin	0002_logentry_remove_auto_add	2019-10-04 00:20:34.936596+03
+5	admin	0003_logentry_add_action_flag_choices	2019-10-04 00:20:34.951596+03
+6	contenttypes	0002_remove_content_type_name	2019-10-04 00:20:34.991299+03
+7	auth	0002_alter_permission_name_max_length	2019-10-04 00:20:35.001971+03
+8	auth	0003_alter_user_email_max_length	2019-10-04 00:20:35.018439+03
+9	auth	0004_alter_user_username_opts	2019-10-04 00:20:35.038114+03
+10	auth	0005_alter_user_last_login_null	2019-10-04 00:20:35.051136+03
+11	auth	0006_require_contenttypes_0002	2019-10-04 00:20:35.065429+03
+12	auth	0007_alter_validators_add_error_messages	2019-10-04 00:20:35.103201+03
+13	auth	0008_alter_user_username_max_length	2019-10-04 00:20:35.161353+03
+14	auth	0009_alter_user_last_name_max_length	2019-10-04 00:20:35.188085+03
+15	auth	0010_alter_group_name_max_length	2019-10-04 00:20:35.211854+03
+16	auth	0011_update_proxy_permissions	2019-10-04 00:20:35.233776+03
+17	sessions	0001_initial	2019-10-04 00:20:35.343156+03
+18	the_boythesda	0001_initial	2019-10-04 00:20:35.812963+03
+19	the_boythesda	0002_sysreq_configuration_name	2019-10-04 00:20:36.087463+03
+20	the_boythesda	0003_auto_20191003_1640	2019-10-04 00:20:36.147922+03
+21	the_boythesda	0004_auto_20191003_1650	2019-10-04 00:20:36.226081+03
+22	userstuff	0001_initial	2019-10-04 00:20:36.333477+03
+23	userstuff	0002_auto_20191009_1743	2019-10-09 20:43:14.229494+03
+24	the_boythesda	0005_auto_20191228_2321	2019-12-29 02:21:29.600289+03
+25	the_boythesda	0006_auto_20191230_2219	2019-12-31 01:19:52.143033+03
+26	the_boythesda	0007_auto_20191231_1505	2019-12-31 18:05:54.273293+03
+27	robokassa	0001_initial	2020-01-07 16:11:30.349984+03
+28	orders	0001_initial	2020-01-07 17:44:10.040549+03
+29	userstuff	0003_auto_20200109_2117	2020-01-10 00:17:25.045939+03
+30	userstuff	0004_auto_20200112_2031	2020-01-12 23:32:01.094806+03
+31	userstuff	0005_auto_20200112_2228	2020-01-13 01:28:23.227866+03
+32	the_boythesda	0008_auto_20200119_1446	2020-01-19 17:46:23.790278+03
+33	the_boythesda	0009_auto_20200119_1447	2020-01-19 17:47:39.868426+03
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+dmpn4a2mrl4mnrri4geim023coxlwspf	NGE1ZDFkMzViMGY2ZWFkYWFlNTZjNjVjZGZhMDJiYzcyOGUyMThlZTp7Il9hdXRoX3VzZXJfaWQiOiI0NiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiMGQxZjQxOWFjMjNiNDUwYWY1ODg0ZGY2NDVkZTY4OWU0ZDUwYTJjZCIsImNhcnQiOnt9fQ==	2020-02-03 22:34:27.500581+03
+7apmjw1zoz29lpsyp8aeyk7jw1s4i8va	ZTJmNWNkYmZlNDAwMjkzZjZkY2I3NjA2OTk0ODc3NWUyZTUyZDE3ODp7ImNhcnQiOnt9fQ==	2020-01-25 16:52:50.912641+03
+f03dm58yhabpzz90mf437i2vb7tcp5c1	YTMzZDM1OGNjNDVhZGFkMGE1ZjcwN2M1ZWMzMTIzZjBjODMxOTAwOTp7fQ==	2020-01-25 16:53:09.958499+03
+2vfgn4oqlthcvd4nvwbn7c5ol282gn7b	YTMzZDM1OGNjNDVhZGFkMGE1ZjcwN2M1ZWMzMTIzZjBjODMxOTAwOTp7fQ==	2020-01-26 02:37:14.64907+03
+ncc2drd3u3c3rkna6fs9wkpjneksfe5j	YTMzZDM1OGNjNDVhZGFkMGE1ZjcwN2M1ZWMzMTIzZjBjODMxOTAwOTp7fQ==	2019-10-23 20:44:00.538335+03
+5cekjgmg1cff6r10i96w4899hhbp64ay	ZTJmNWNkYmZlNDAwMjkzZjZkY2I3NjA2OTk0ODc3NWUyZTUyZDE3ODp7ImNhcnQiOnt9fQ==	2020-01-27 00:14:03.104231+03
+ltit8x9zy8422wihxr994hvjji714ms2	ZTFhZTYyNTc2N2FhZmFhOGYzNzE0YzgyNGI3ZjBjZmQ1MmM3MWY0ODp7ImNhcnQiOnsiMiI6eyJxdWFudGl0eSI6MSwicHJpY2UiOiIxOTAwLjAifX0sIl9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2M2Y1M2JkZWY5MDhiZWM5MGE5ODMwODVlZDQ4MjVkMDk3YzAxOGI1In0=	2019-11-17 14:57:37.005382+03
+\.
+
+
+--
+-- Data for Name: orders_order; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.orders_order (id, first_name, last_name, email, created, updated, paid) FROM stdin;
+37	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:12:05.525885+03	2020-01-08 18:12:05.525904+03	f
+38	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:13:55.427212+03	2020-01-08 18:13:55.427235+03	f
+39	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:21:12.887401+03	2020-01-08 18:21:12.887421+03	f
+40	Павел	Жопин	dickhead@mail.ru	2020-01-08 18:22:16.616152+03	2020-01-08 18:22:16.616171+03	f
+41	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:25:14.39514+03	2020-01-08 18:25:14.395162+03	f
+42	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:28:39.941768+03	2020-01-08 18:28:39.94179+03	f
+43	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:32:16.875864+03	2020-01-08 18:32:16.875883+03	f
+44	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 18:32:49.472068+03	2020-01-08 18:32:49.47209+03	f
+45	Геннадий	Жопин	otsvetikov@mail.ru	2020-01-08 18:53:22.511191+03	2020-01-08 18:53:22.511208+03	f
+46	Геннадий	Жопин	dickhead@mail.ru	2020-01-08 19:04:21.012096+03	2020-01-08 19:04:21.012115+03	f
+47	Геннадий	Жопин	dickhead@mail.ru	2020-01-12 02:49:34.779399+03	2020-01-12 02:49:34.779418+03	f
+48	Геннадий	Жопин	dickhead@mail.ru	2020-01-13 17:42:56.54427+03	2020-01-13 17:42:56.544293+03	f
+49	Пользователь	User	otsvetikov@mail.ru	2020-01-20 22:34:08.171861+03	2020-01-20 22:34:08.17189+03	f
+\.
+
+
+--
+-- Data for Name: orders_orderitem; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.orders_orderitem (id, price, quantity, game_id, order_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: robokassa_successnotification; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.robokassa_successnotification (id, "InvId", "OutSum", created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: userstuff_userprofile; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.userstuff_userprofile (id, user_profile_picture, user_email, user_rating, user_id) FROM stdin;
+59		\N	\N	48
+58		\N	\N	47
+57		\N	\N	46
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, true);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 56, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 48, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 121, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 14, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 33, true);
+
+
+--
+-- Name: orders_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.orders_order_id_seq', 49, true);
+
+
+--
+-- Name: orders_orderitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.orders_orderitem_id_seq', 1, false);
+
+
+--
+-- Name: robokassa_successnotification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.robokassa_successnotification_id_seq', 1, false);
+
+
+--
+-- Name: the_boythesda_game_genre_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.the_boythesda_game_genre_id_seq', 376, true);
+
+
+--
+-- Name: the_boythesda_game_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.the_boythesda_game_id_seq', 90, true);
+
+
+--
+-- Name: the_boythesda_genre_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.the_boythesda_genre_id_seq', 376, true);
+
+
+--
+-- Name: the_boythesda_publisher_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.the_boythesda_publisher_id_seq', 90, true);
+
+
+--
+-- Name: the_boythesda_sysreq_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.the_boythesda_sysreq_id_seq', 90, true);
+
+
+--
+-- Name: userstuff_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.userstuff_userprofile_id_seq', 59, true);
+
+
+--
+-- Name: GENRE GENRE_name_a33500c4_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GENRE"
+    ADD CONSTRAINT "GENRE_name_a33500c4_uniq" UNIQUE (name);
+
+
+--
+-- Name: PUBLISHER PUBLISHER_name_63d3135f_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."PUBLISHER"
+    ADD CONSTRAINT "PUBLISHER_name_63d3135f_uniq" UNIQUE (name);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: orders_order orders_order_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders_order
+    ADD CONSTRAINT orders_order_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders_orderitem orders_orderitem_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders_orderitem
+    ADD CONSTRAINT orders_orderitem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: robokassa_successnotification robokassa_successnotification_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.robokassa_successnotification
+    ADD CONSTRAINT robokassa_successnotification_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: GAME_genre the_boythesda_game_genre_game_id_genre_id_128cc2a7_uniq; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME_genre"
+    ADD CONSTRAINT the_boythesda_game_genre_game_id_genre_id_128cc2a7_uniq UNIQUE (game_id, genre_id);
+
+
+--
+-- Name: GAME_genre the_boythesda_game_genre_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME_genre"
+    ADD CONSTRAINT the_boythesda_game_genre_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: GAME the_boythesda_game_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME"
+    ADD CONSTRAINT the_boythesda_game_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: GENRE the_boythesda_genre_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GENRE"
+    ADD CONSTRAINT the_boythesda_genre_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: PUBLISHER the_boythesda_publisher_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."PUBLISHER"
+    ADD CONSTRAINT the_boythesda_publisher_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: SYSREQ the_boythesda_sysreq_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."SYSREQ"
+    ADD CONSTRAINT the_boythesda_sysreq_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: userstuff_userprofile userstuff_userprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.userstuff_userprofile
+    ADD CONSTRAINT userstuff_userprofile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: userstuff_userprofile userstuff_userprofile_user_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.userstuff_userprofile
+    ADD CONSTRAINT userstuff_userprofile_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: GENRE_name_a33500c4_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "GENRE_name_a33500c4_like" ON public."GENRE" USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: PUBLISHER_name_63d3135f_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "PUBLISHER_name_63d3135f_like" ON public."PUBLISHER" USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: orders_orderitem_game_id_a7fff13c; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX orders_orderitem_game_id_a7fff13c ON public.orders_orderitem USING btree (game_id);
+
+
+--
+-- Name: orders_orderitem_order_id_fe61a34d; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX orders_orderitem_order_id_fe61a34d ON public.orders_orderitem USING btree (order_id);
+
+
+--
+-- Name: robokassa_successnotification_InvId_2adb5e8f; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "robokassa_successnotification_InvId_2adb5e8f" ON public.robokassa_successnotification USING btree ("InvId");
+
+
+--
+-- Name: the_boythesda_game_genre_game_id_b9df4a45; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX the_boythesda_game_genre_game_id_b9df4a45 ON public."GAME_genre" USING btree (game_id);
+
+
+--
+-- Name: the_boythesda_game_genre_genre_id_b44e73be; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX the_boythesda_game_genre_genre_id_b44e73be ON public."GAME_genre" USING btree (genre_id);
+
+
+--
+-- Name: the_boythesda_game_publisher_id_e71570d8; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX the_boythesda_game_publisher_id_e71570d8 ON public."GAME" USING btree (publisher_id);
+
+
+--
+-- Name: the_boythesda_game_sysReq_id_526d3f4e; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "the_boythesda_game_sysReq_id_526d3f4e" ON public."GAME" USING btree ("sysReq_id");
+
+
+--
+-- Name: GENRE un_values_genre; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER un_values_genre BEFORE INSERT ON public."GENRE" FOR EACH ROW EXECUTE PROCEDURE public.unique_values_genre();
+
+
+--
+-- Name: PUBLISHER unique_values_publisher_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER unique_values_publisher_trigger BEFORE INSERT ON public."PUBLISHER" FOR EACH ROW EXECUTE PROCEDURE public.unique_values_publisher();
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_orderitem orders_orderitem_game_id_a7fff13c_fk_GAME_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders_orderitem
+    ADD CONSTRAINT "orders_orderitem_game_id_a7fff13c_fk_GAME_id" FOREIGN KEY (game_id) REFERENCES public."GAME"(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_orderitem orders_orderitem_order_id_fe61a34d_fk_orders_order_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.orders_orderitem
+    ADD CONSTRAINT orders_orderitem_order_id_fe61a34d_fk_orders_order_id FOREIGN KEY (order_id) REFERENCES public.orders_order(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: GAME_genre the_boythesda_game_g_game_id_b9df4a45_fk_the_boyth; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME_genre"
+    ADD CONSTRAINT the_boythesda_game_g_game_id_b9df4a45_fk_the_boyth FOREIGN KEY (game_id) REFERENCES public."GAME"(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: GAME_genre the_boythesda_game_g_genre_id_b44e73be_fk_the_boyth; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME_genre"
+    ADD CONSTRAINT the_boythesda_game_g_genre_id_b44e73be_fk_the_boyth FOREIGN KEY (genre_id) REFERENCES public."GENRE"(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: GAME the_boythesda_game_publisher_id_e71570d8_fk_the_boyth; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME"
+    ADD CONSTRAINT the_boythesda_game_publisher_id_e71570d8_fk_the_boyth FOREIGN KEY (publisher_id) REFERENCES public."PUBLISHER"(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: GAME the_boythesda_game_sysReq_id_526d3f4e_fk_the_boyth; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."GAME"
+    ADD CONSTRAINT "the_boythesda_game_sysReq_id_526d3f4e_fk_the_boyth" FOREIGN KEY ("sysReq_id") REFERENCES public."SYSREQ"(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: userstuff_userprofile userstuff_userprofile_user_id_6c088266_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.userstuff_userprofile
+    ADD CONSTRAINT userstuff_userprofile_user_id_6c088266_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

@@ -22,10 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'qqt!!yoo11#@hp#+o4q(=n3dcm7pr$c_9wpmglbk25ox^*w)+2'
+SECRET_KEY = 'qqt!!yoo11#@hp#+o4q(=n3dcm7pr$c_9wpmglbk25ox^*w)+2'
 
-import os
-SECRET_KEY = os.environ.get('SECRET_KEY')
+#SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,6 +32,7 @@ DEBUG = True
 #DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
 ALLOWED_HOSTS = ['boythesda.herokuapp.com']
+#ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -92,7 +92,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'boythesda',
-        'USER': 'postgres',
+        'USER': 'boythesda_user',
         'PASSWORD': '729438165',
         'HOST': 'localhost',
         'PORT': '',
