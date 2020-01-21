@@ -20,6 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = 'qqt!!yoo11#@hp#+o4q(=n3dcm7pr$c_9wpmglbk25ox^*w)+2'
 
@@ -97,6 +98,10 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
