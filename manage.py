@@ -3,8 +3,14 @@
 import os
 import sys
 
+from io import StringIO
+from dotenv import dotenv_values
+filelike = StringIO('SPAM=EGGS\n')
+filelike.seek(0)
+parsed = dotenv_values(stream=filelike)
 
 def main():
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'boythesda.settings')
     try:
         from django.core.management import execute_from_command_line
