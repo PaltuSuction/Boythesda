@@ -6,3 +6,4 @@ export DEBUG_VALUE="True"
 export AWS_SECRET_KEY_ID="AKIA3WD6JNT7LUDNME4M"
 export AWS_SECRET_ACCESS_KEY="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"
 export AWS_STORAGE_BUCKET_NAME="boythesda-files"
+
